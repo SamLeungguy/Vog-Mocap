@@ -144,16 +144,16 @@ namespace vog
 				light_nsc.pUeserData;
 				m_lightHandles.reserve(demo_game::LightManager::s_max_count);
 
-				for (size_t i = 0; i < demo_game::LightManager::s_max_count; i++)
-				{
-					Entity lightEntity = m_scenePanel.createLight({}, "");
-					
-					auto& transform = lightEntity.getComponent<TransformComponent>();
-					//transform.isEnable = false;
-					//transform.translation = transform.translation;
-					//transform.scale = { 2.0f, 2.0f, 2.0f };
-					m_lightHandles.push_back(lightEntity);
-				}
+				//for (size_t i = 0; i < demo_game::LightManager::s_max_count; i++)
+				//{
+				//	Entity lightEntity = m_scenePanel.createLight({}, "");
+				//	
+				//	auto& transform = lightEntity.getComponent<TransformComponent>();
+				//	//transform.isEnable = false;
+				//	//transform.translation = transform.translation;
+				//	//transform.scale = { 2.0f, 2.0f, 2.0f };
+				//	m_lightHandles.push_back(lightEntity);
+				//}
 			}
 
 			// set up rhythmManager
@@ -327,21 +327,6 @@ namespace vog
 		{
 			//m_modelEntity
 			m_pKinectAPI->onUpdateBonesTransfom(m_pKinectModel);
-
-			if (m_pKinectAPI->getJointUpdatedData()[JointType_HandRight].isTrakced)
-			{
-				float length = 4;
-
-				KinectDataRange range;
-				range.min_translation = { -length, -length, -length };
-				range.max_translation = { length, length, length };
-
-				Vector3f ret = KinectAPI::mapTranslationTo(m_pKinectAPI->getJointUpdatedData()[JointType_HandRight].translation, 
-										m_pKinectAPI->getJointResetZeroData()[JointType_HandRight].translation, 
-										m_pKinectAPI->getJointDataRanges()[JointType_HandRight], range);
-
-				m_moveEntity.getComponent<TransformComponent>().translation = ret;
-			}
 		}
 #endif // VOG_ENABLE_KINECT
 
@@ -353,20 +338,30 @@ namespace vog
 			auto* pTransform = &entity.getComponent<TransformComponent>();
 			const Vector3f& right_arm_rotation = m_arduinoSerial.getFinalRotation(IMUJointType::Right_Arm);
 			pTransform->rotation.x = right_arm_rotation.z;
-			pTransform->rotation.z = -right_arm_rotation.x;
+			pTransform->rotation.z = right_arm_rotation.x;
 			pTransform->rotation.y = right_arm_rotation.y;
+
+			if (m_pKinectAPI->getJointUpdatedData()[JointType_HandRight].isTrakced)
+			{
+				pTransform->translation = m_pKinectAPI->getFinalData_Poisition(JointType_HandRight);
+			}
 
 			/*VOG_LOG_INFO("== Update Start==");
 			VOG_LOG_INFO("right arm rotation");
 			VOG_LOG_GLM(pTransform->rotation);*/
 
-				entity = { m_leftSaberHandle, m_pActiveScene.get() };
+			entity = { m_leftSaberHandle, m_pActiveScene.get() };
 			pTransform = &entity.getComponent<TransformComponent>();
 			const Vector3f& left_arm_rotation = m_arduinoSerial.getFinalRotation(IMUJointType::Left_Arm);
 
 			pTransform->rotation.x = -left_arm_rotation.z;
-			pTransform->rotation.z = -left_arm_rotation.x;
+			pTransform->rotation.z = left_arm_rotation.x;
 			pTransform->rotation.y = left_arm_rotation.y;
+
+			if (m_pKinectAPI->getJointUpdatedData()[JointType_HandLeft].isTrakced)
+			{
+				pTransform->translation = m_pKinectAPI->getFinalData_Poisition(JointType_HandLeft);
+			}
 
 			//VOG_LOG_INFO("left arm rotation");
 			//VOG_LOG_GLM(pTransform->rotation);
@@ -398,14 +393,14 @@ namespace vog
 		}
 
 #ifdef VOG_ENABLE_KINECT
-		if (m_pKinectAPI->getIsHandClosed().first)
+		/*if (m_pKinectAPI->getIsHandClosed().first)
 		{
 			VirtualMouse mouse;
 			auto handPosition = m_pKinectAPI->getHandScreenPosition();
 			Vector2f ratio = { handPosition.first.x, handPosition.first.y };
 			mouse.setMousePosition((int)ratio.x, (int)ratio.y);
 			VOG_LOG_INFO("X: {0}, Y: {1}", ratio.x, ratio.y);
-		}
+		}*/
 #endif // VOG_ENABLE_KINECT
 		
 		if (m_isViewportFocused)

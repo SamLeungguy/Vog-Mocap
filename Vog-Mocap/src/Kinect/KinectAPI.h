@@ -159,38 +159,13 @@ namespace vog {
 			|| type_ == JointType_SpineBase
 			|| type_ == JointType_ElbowLeft
 			|| type_ == JointType_WristLeft
+			|| type_ == JointType_HandLeft
+			|| type_ == JointType_HandRight
 			|| type_ == JointType_ElbowRight
 			|| type_ == JointType_WristRight;
 	}
 
-	static std::array<float, JointType::JointType_Count> s_kinectMappingScales =
-	{
-		1.0f, // JointType_SpineBase		
-		1.0f, // JointType_SpineMid		
-		1.0f, // JointType_Neck			
-		1.0f, // JointType_Head			
-		1.0f, // JointType_ShoulderLeft	
-		1.0f, // JointType_ElbowLeft		
-		1.0f, // JointType_WristLeft		
-		1.0f, // JointType_HandLeft		
-		1.0f, // JointType_ShoulderRight	
-		1.0f, // JointType_ElbowRight	
-		1.0f, // JointType_WristRight	
-		1.0f, // JointType_HandRight		
-		1.0f, // JointType_HipLeft		
-		1.0f, // JointType_KneeLeft		
-		1.0f, // JointType_AnkleLeft		
-		1.0f, // JointType_FootLeft		
-		1.0f, // JointType_HipRight		
-		1.0f, // JointType_KneeRight		
-		1.0f, // JointType_AnkleRight	
-		1.0f, // JointType_FootRight		
-		1.0f, // JointType_SpineShoulder	
-		1.0f, // JointType_HandTipLeft	
-		1.0f, // JointType_ThumbLeft		
-		1.0f, // JointType_HandTipRight	
-		1.0f, // JointType_ThumbRight	
-	};
+	
 
 	class VOG_API KinectAPI : public NonCopyable
 	{
@@ -216,14 +191,30 @@ namespace vog {
 		const std::array<KinectData, JointType::JointType_Count>& getJointResetZeroData() const { return m_jointRestZeroData; }
 		const std::array<KinectDataRange, JointType::JointType_Count>& getJointDataRanges() const { return m_jointDataRanges; }
 
-		const Vector3f& getFinalData_Poisition(JointType type_) const {
-			int index = type_;
-
-			float length = s_kinectMappingScales[index];
-
+		/*const Vector3f& getFinalJoint_Poisiton(JointType type_) const 
+		{ 
 			KinectDataRange range;
+			float length = s_kinectMappingScales[type_];
 			range.min_translation = { -length, -length, -length };
 			range.max_translation = { length, length, length };
+
+			return mapTranslationTo(getJointUpdatedData()[type_].translation,
+			getJointResetZeroData()[JointType_HandRight].translation,
+			getJointDataRanges()[JointType_HandRight], range); 
+		}*/
+
+		Vector3f getFinalData_Poisition(JointType type_) const {
+			int index = type_;
+
+			VOG_ASSERT(isJointTypeSupported(type_), "");
+
+			float scale = m_kinectMappingScales[index];
+			//VOG_LOG_INFO("scale: {0}", scale);
+
+			KinectDataRange range;
+			range.min_translation = { -scale, -scale, -scale };
+			range.max_translation = { scale, scale, scale };
+
 
 			Vector3f ret = KinectAPI::mapTranslationTo(getJointUpdatedData()[index].translation,
 				getJointResetZeroData()[index].translation,
@@ -283,6 +274,35 @@ namespace vog {
 		Sample::FilterDoubleExponential m_filter;
 
 		float m_transformScaleFactor = 30.0f;
+
+		std::array<float, JointType::JointType_Count> m_kinectMappingScales =
+		{
+			1.0f, // JointType_SpineBase		
+			1.0f, // JointType_SpineMid		
+			1.0f, // JointType_Neck			
+			1.0f, // JointType_Head			
+			1.0f, // JointType_ShoulderLeft	
+			1.0f, // JointType_ElbowLeft		
+			1.0f, // JointType_WristLeft		
+			8.0f, // JointType_HandLeft		
+			1.0f, // JointType_ShoulderRight	
+			1.0f, // JointType_ElbowRight	
+			1.0f, // JointType_WristRight	
+			8.0f, // JointType_HandRight		
+			1.0f, // JointType_HipLeft		
+			1.0f, // JointType_KneeLeft		
+			1.0f, // JointType_AnkleLeft		
+			1.0f, // JointType_FootLeft		
+			1.0f, // JointType_HipRight		
+			1.0f, // JointType_KneeRight		
+			1.0f, // JointType_AnkleRight	
+			1.0f, // JointType_FootRight		
+			1.0f, // JointType_SpineShoulder	
+			1.0f, // JointType_HandTipLeft	
+			1.0f, // JointType_ThumbLeft		
+			1.0f, // JointType_HandTipRight	
+			1.0f, // JointType_ThumbRight	
+		};
 
 		//Renderer object
 		RefPtr<VertexArray> m_pSkeletonVA;

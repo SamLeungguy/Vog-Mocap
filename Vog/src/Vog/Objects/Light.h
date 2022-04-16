@@ -22,7 +22,7 @@ namespace vog {
 	struct VOG_API Light
 	{
 	public:
-		static constexpr int s_max_light_count = 50;
+		static constexpr int s_max_light_count = 100;
 		static int s_current_light_count;
 
 		//struct Type

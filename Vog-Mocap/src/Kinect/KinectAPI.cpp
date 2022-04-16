@@ -152,12 +152,20 @@ namespace vog {
 		ImGuiLibrary::drawCheckbox("Reset Zero", m_isResetZero);
 		ImGuiLibrary::drawCheckbox("Calibrate", m_isCalibrating);
 
-		m_isResetZero = getIsHandClosed().first;
+		//m_isResetZero = getIsHandClosed().first;
 
-		/*for (int i = 0; i < s_kinectMappingScales.size(); i++)
+		for (int i = 0; i < m_kinectMappingScales.size(); i++)
 		{
-			ImGui::DragFloat(KinectJointTypeToString((JointType)i), &s_kinectMappingScales[i], 0.1f);
-		}*/
+			if (isJointTypeSupported((JointType)i))
+			{
+				float scale = m_kinectMappingScales[i];
+				bool isChanged = ImGui::DragFloat(KinectJointTypeToString((JointType)i), &m_kinectMappingScales[i], 0.1f);
+				if (isChanged)
+				{
+					VOG_LOG_INFO("{0}, scale = {1}", KinectJointTypeToString((JointType)i), m_kinectMappingScales[i]);
+				}
+			}
+		}
 
 		//static Sample::TRANSFORM_SMOOTH_PARAMETERS smoothingParams;
 		//static bool isReset = false;
@@ -218,7 +226,7 @@ namespace vog {
 						pKinectAPI->getJointResetZeroData()[boneIndex].translation,
 						pKinectAPI->getJointDataRanges()[boneIndex], range);*/
 
-					node_.transform.translation = pKinectAPI->getFinalData_Poisition((JointType)boneIndex);
+					//node_.transform.translation = pKinectAPI->getFinalData_Poisition((JointType)boneIndex);
 
 					if (type_ == JointType::JointType_Head)
 					{
