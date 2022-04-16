@@ -31,6 +31,8 @@ namespace vog
 		void renderColliderOutline();
 		void renderLightOutline();
 
+		void updateMocap(float dt_);
+
 		Vector2f getViewportSize();
 		Vector2f getViewportMousePosition();
 

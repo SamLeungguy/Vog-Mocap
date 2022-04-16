@@ -21,6 +21,9 @@ namespace demo_game
 		static constexpr Vector4f blue_bar_albedo_color		= { 1.0f, 50.0f, 1200.0f, 1.0f };
 		static constexpr Vector4f blue_bar_emissive_color	= { 1.0f, 20.0f, 1200.0f, 1.0f };
 
+		static constexpr Vector4f blue_plane_albedo_color = { 1.0f, 10.0f, 30.0f, 1.0f };
+		static constexpr Vector4f red_plane_albedo_color = { 40.0f, 1.0f, 1.0f, 1.0f };
+
 		/*virtual void onStart()
 		{
 		};

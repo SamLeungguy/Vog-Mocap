@@ -8,27 +8,33 @@
 
 namespace demo_game
 {
-#define ENABLE_SABER_DEBUG_LOG
+//#define ENABLE_SABER_DEBUG_LOG
 
 	using namespace vog;
 	class Saber : public NativeScriptEntity
 	{
 	public:
 		Vector3f prev_position = {0.0f, 0.0f, 0.0f};
-
+		ColorType::Color m_color;
+		
 	public:
 		Saber() = default;
-		virtual ~Saber() = default;
+		virtual ~Saber()
+		{
+			s_count--;
+		}
 
 		virtual void onStart()
 		{
 			//VOG_CORE_LOG_INFO("Move Entity: onStart!");
 
+			m_color = (ColorType::Color)s_count;
+			s_count++;
 		};
 
 		virtual void onDestroy()
 		{
-
+			
 		};
 
 		virtual void onUpdate(float dt_)
@@ -56,10 +62,29 @@ namespace demo_game
 			RhythmCube* pCube = other.getComponent<NativeScriptComponent>().get<RhythmCube>();
 			if (!pCube)
 				return;
+
+			if (m_color != pCube->m_color)
+			{
+				return;
+			}
+
+			LightManager::get().setColor(m_color);
+
+			auto& saberTransform = getComponent<TransformComponent>();
+			auto saber_up = MyMath::toQuaternion(saberTransform.rotation) * Vector3f(0.0f, 1.0f, 0.0f);
+
 			auto& cubeTransform = pCube->getComponent<TransformComponent>();
 			auto cube_up = MyMath::toQuaternion(cubeTransform.rotation)* Vector3f(0.0f, 1.0f, 0.0f);
 
-			auto dir = getComponent<TransformComponent>().translation - prev_position;
+			auto cos_angle = MyMath::dot(saber_up, cube_up);
+			if (cos_angle > 0.95f)
+			{
+				VOG_LOG_INFO("Hitted cube!");
+				RhythmCubeManager::get().destroyRythm(other);
+
+			}
+
+			/*auto dir = getComponent<TransformComponent>().translation - prev_position;
 			dir = MyMath::normalize(dir);
 
 			auto cos_angle = MyMath::dot(dir, cube_up);
@@ -67,9 +92,8 @@ namespace demo_game
 
 			if (angle > MyMath::radians(130.0f))
 			{
-			}
+			}*/
 
-			RhythmCubeManager::get().destroyRythm(other);
 
 #ifdef ENABLE_SABER_DEBUG_LOG
 			VOG_LOG_INFO("cube_up");
@@ -101,8 +125,9 @@ namespace demo_game
 
 			VOG_CORE_LOG_INFO("{0} with {1}: onTriggerExit!", my_name, other_name);
 #endif // 0
-
-
 		};
+
+		private:
+			static int s_count;
 	};
 }

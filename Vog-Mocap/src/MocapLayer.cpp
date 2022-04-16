@@ -132,55 +132,6 @@ namespace vog
 			data = 0xffffffff;
 			m_pWhiteTexture->setData(&data, sizeof(uint32_t));
 
-			// set up hit light
-			{
-				auto light = m_scenePanel.createLight();
-				light.getComponent<LightComponent::Type>().type = LightType::Directional;
-				light.getComponent<TransformComponent>().translation = { 1.0f, 5.0f, 0.0f };
-				light.getComponent<TransformComponent>().rotation = { MyMath::radians(150.0f), 0.0f, 0.0f };
-
-				auto& light_nsc = light.addComponent<NativeScriptComponent>();
-				light_nsc.bind<demo_game::LightManager>();
-				light_nsc.pUeserData;
-				m_lightHandles.reserve(demo_game::LightManager::s_max_count);
-
-				//for (size_t i = 0; i < demo_game::LightManager::s_max_count; i++)
-				//{
-				//	Entity lightEntity = m_scenePanel.createLight({}, "");
-				//	
-				//	auto& transform = lightEntity.getComponent<TransformComponent>();
-				//	//transform.isEnable = false;
-				//	//transform.translation = transform.translation;
-				//	//transform.scale = { 2.0f, 2.0f, 2.0f };
-				//	m_lightHandles.push_back(lightEntity);
-				//}
-			}
-
-			// set up rhythmManager
-			{
-				auto rhythmCubeManager = m_pActiveScene->createEntity("rhythmCubeMangaer");
-				auto& rhythmCubeManagerTransform = rhythmCubeManager.getComponent<TransformComponent>();
-				rhythmCubeManagerTransform.translation = { 0.0f, 0.0f, -45.0f };
-				auto& nsc = rhythmCubeManager.addComponent<NativeScriptComponent>();
-				nsc.bind<demo_game::RhythmCubeManager>();
-				rhythmCubeManager.addComponent<LightComponent>();
-				nsc.pUeserData = &m_rhythmHandles;
-				m_rhythmHandles.reserve(demo_game::RhythmCubeManager::s_max_rhythmCube);
-
-				for (size_t i = 0; i < demo_game::RhythmCubeManager::s_max_rhythmCube; i++)
-				{
-					auto rhythmCube = m_scenePanel.createOBB({}, "RhythmCube");
-					auto& cube_nsc = rhythmCube.addComponent<NativeScriptComponent>();
-					cube_nsc.bind<demo_game::RhythmCube>();
-
-					auto& transform = rhythmCube.getComponent<TransformComponent>();
-					transform.isEnable = false;
-					transform.translation = rhythmCubeManagerTransform.translation;
-					transform.scale = { 2.0f, 2.0f, 2.0f };
-					m_rhythmHandles.push_back(rhythmCube);
-				}
-			}
-
 			//// set up rhythmCube
 			//{
 			//	auto rhythmCube = m_scenePanel.createOBB({}, "RhythmCube_red");
@@ -202,7 +153,8 @@ namespace vog
 			{
 				auto saber_left_parent = m_pActiveScene->createEntity("saber_left");
 				m_leftSaberHandle = saber_left_parent;
-				saber_left_parent.addComponent<NativeScriptComponent>().bind<demo_game::Saber>();
+				auto* pNSC = &saber_left_parent.addComponent<NativeScriptComponent>();
+				pNSC->bind<demo_game::Saber>();
 				saber_left_parent.addComponent<RigidbodyComponent>();
 				auto& saber_left_capsule = saber_left_parent.addComponent<CapsuleColliderComponent>();
 				saber_left_capsule.center = { 0.0f, 6.0f, -0.075f };
@@ -219,7 +171,8 @@ namespace vog
 				auto saber_right_parent = m_pActiveScene->createEntity("saber_right");
 				m_rightSaberHandle = saber_right_parent;
 				auto saber_right = m_pActiveScene->duplicateEntity(saber_left, saber_right_parent);
-				saber_right_parent.addComponent<NativeScriptComponent>().bind<demo_game::Saber>();
+				pNSC = &saber_right_parent.addComponent<NativeScriptComponent>();
+				pNSC->bind<demo_game::Saber>();
 				saber_right_parent.addComponent<RigidbodyComponent>();
 				auto& saber_right_capsule = saber_right_parent.addComponent<CapsuleColliderComponent>();
 				saber_right_capsule.center = { 0.0f, 6.0f, -0.075f };
@@ -242,12 +195,11 @@ namespace vog
 				pTransform->translation = { 0.0f, -5.0f, 0.0f };
 				pTransform->scale = {30.0f, 0.5f, 15.0f};
 				entity.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.albedo", { 0.05f, 0.05f, 0.05f, 1.0f });
-				entity.getComponent<MeshRendererComponent>().pMaterial->setFloat("u_property.shiness", 32.0f);
 
 				entity = createRawCube("Stage", m_pActiveScene);
 				pTransform = &entity.getComponent<TransformComponent>();
 				pTransform->translation = { 0.0f, -5.0f, -263.5f };
-				pTransform->scale = { 20.0f, 0.5f, 500.0f };
+				pTransform->scale = { 50.0f, 0.5f, 500.0f };
 				entity.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.albedo", { 0.2f, 0.2f, 0.2f, 1.0f });
 
 				entity = createRawCube("Left Wall", m_pActiveScene);
@@ -308,7 +260,129 @@ namespace vog
 				pTransform->scale = {50.0f, 1.0f, 50.0f};
 				entity.addComponent<NativeScriptComponent>().bind<demo_game::Boundary>();
 			}
+
+			{
+				Entity lightEntity = m_scenePanel.createLight({}, "Light-Spoit");
+				auto* pType = &lightEntity.getComponent<LightComponent::Type>();
+				pType->type = LightType::Spot;
+
+				auto* pLight_Colors = &lightEntity.getComponent<LightComponent::Color>().color;
+				auto* pLight_Params = &lightEntity.getComponent<LightComponent::Params>().params;
+				*pLight_Colors = Vector4f(MyRandom::Vec3f(1.0f, 5.0f), 1.0f);
+				pLight_Colors->a = MyRandom::Float(2.0f, 4.0f);
+				pLight_Params->x = MyRandom::Float(5.0f, 10.0f);
+
+				pLight_Params->z = 10.0f;
+				pLight_Params->w = 30.0f;
+
+			}
+
+			// set up hit light
+			{
+				auto light = m_scenePanel.createLight();
+				light.getComponent<LightComponent::Type>().type = LightType::Directional;
+				auto* pColors = &light.getComponent<LightComponent::Color>().color;
+				auto* pParams = &light.getComponent<LightComponent::Params>().params;
+
+				pColors->a = 0.1f;
+				light.getComponent<TransformComponent>().translation = { 1.0f, 5.0f, 0.0f };
+				light.getComponent<TransformComponent>().rotation = { MyMath::radians(150.0f), 0.0f, 0.0f };
+
+				auto& light_nsc = light.addComponent<NativeScriptComponent>();
+				light_nsc.bind<demo_game::LightManager>();
+				light_nsc.pUeserData = (void*)&m_lightHandles;
+				m_lightHandles.reserve(demo_game::LightManager::s_max_count + 1);
+
+				auto light_mesh = m_scenePanel.createPlane({}, "light plane");
+				auto* pTransform = &light_mesh.getComponent<TransformComponent>();
+				pTransform->translation.z = -200.0f;
+				pTransform->rotation = { MyMath::radians(90.0f), 0.0f, 0.0f};
+				pTransform->scale = Vector3f(20.0f, 20.0f, 20.0f);
+				light_mesh.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.albedo", demo_game::ColorType::blue_plane_albedo_color);
+				//light_mesh.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.emissive", demo_game::ColorType::blue_bar_emissive_color);
+				m_lightHandles.push_back(light_mesh);			// [0]
+
+				Entity lightEntity = m_scenePanel.createLight({}, "light plane light");
+				pTransform = &lightEntity.getComponent<TransformComponent>();
+				pTransform->translation = light_mesh.getComponent<TransformComponent>().translation;
+				pTransform->translation.y = 10.0f;
+				pTransform->translation.z += 5.0f;
+				auto* pType = &light.getComponent<LightComponent::Type>();
+
+				pColors = &lightEntity.getComponent<LightComponent::Color>().color;
+				*pColors = Vector4f(MyRandom::Vec3f(1.0f, 2.0f), 1.0f);
+				pColors->a = 2.0f;
+				pParams = &lightEntity.getComponent<LightComponent::Params>().params;
+				pParams->x = 200.0f;
+
+				m_lightHandles.push_back(lightEntity);			// [1]
+
+				for (size_t i = 2; i < demo_game::LightManager::s_max_count; i++)
+				{
+					Entity lightEntity = m_scenePanel.createLight({}, "Light");
+					auto* pType = &lightEntity.getComponent<LightComponent::Type>();
+					pType->type = LightType::Spot;
+
+					auto* pLight_Colors = &lightEntity.getComponent<LightComponent::Color>().color;
+					auto* pLight_Params = &lightEntity.getComponent<LightComponent::Params>().params;
+					*pLight_Colors = Vector4f(MyRandom::Vec3f(1.0f, 5.0f), 1.0f);
+					pLight_Colors->a = MyRandom::Float(2.0f, 4.0f);
+					pLight_Params->x = MyRandom::Float(5.0f, 10.0f);
+					float inner_angle = 10.0f;
+					pLight_Params->z = MyMath::cos(MyMath::radians(inner_angle));
+					pLight_Params->w = MyMath::cos(MyMath::radians(MyRandom::Float(inner_angle + 10.0f, inner_angle + 40.0f)));
+
+					/*pLight_Params->z = 1.0f;
+					pLight_Params->w = i * 1.0f;*/
+
+					auto& transform = lightEntity.getComponent<TransformComponent>();
+					transform.translation.x = MyRandom::Float(-10.0f, 10.0f);
+					transform.translation.y = MyRandom::Float(1.0f, 5.0f);
+
+					//VOG_LOG_GLM(transform.translation);
+					//VOG_LOG_INFO("y: {}");
+
+					//transform.isEnable = false;
+					transform.translation.z -= i * 5.0f - 5.0f;
+
+					transform.rotation.x = MyMath::radians(90.0f);
+
+					m_lightHandles.push_back(lightEntity);
+				}
+
+				
+
+			}
+
+			// set up rhythmManager
+			{
+				auto rhythmCubeManager = m_pActiveScene->createEntity("rhythmCubeMangaer");
+				auto& rhythmCubeManagerTransform = rhythmCubeManager.getComponent<TransformComponent>();
+				rhythmCubeManagerTransform.translation = { 0.0f, 0.0f, -45.0f };
+				auto& nsc = rhythmCubeManager.addComponent<NativeScriptComponent>();
+				nsc.bind<demo_game::RhythmCubeManager>();
+				rhythmCubeManager.addComponent<LightComponent>();
+				nsc.pUeserData = &m_rhythmHandles;
+				m_rhythmHandles.reserve(demo_game::RhythmCubeManager::s_max_rhythmCube);
+
+				for (size_t i = 0; i < demo_game::RhythmCubeManager::s_max_rhythmCube; i++)
+				{
+					auto rhythmCube = m_scenePanel.createOBB({}, "RhythmCube");
+					auto& cube_nsc = rhythmCube.addComponent<NativeScriptComponent>();
+					cube_nsc.bind<demo_game::RhythmCube>();
+
+					auto& transform = rhythmCube.getComponent<TransformComponent>();
+					transform.isEnable = false;
+					transform.translation = rhythmCubeManagerTransform.translation;
+					transform.scale = { 2.0f, 2.0f, 2.0f };
+					m_rhythmHandles.push_back(rhythmCube);
+				}
+			}
 		}
+
+		Entity lightEntity = { m_lightHandles[2], m_pActiveScene.get() };
+		auto* pLight_Params = &lightEntity.getComponent<LightComponent::Params>().params;
+		pLight_Params->z = 50.0f;
 	}
 
 	void MocapLayer::onDetach()
@@ -318,60 +392,7 @@ namespace vog
 
 	void MocapLayer::onUpdate(float timestep_)
 	{
-#ifdef VOG_ENABLE_KINECT
-		if (m_pKinectAPI)
-		{
-			m_pKinectAPI->onUpdate();
-		}
-		if (m_pKinectModel)
-		{
-			//m_modelEntity
-			m_pKinectAPI->onUpdateBonesTransfom(m_pKinectModel);
-		}
-#endif // VOG_ENABLE_KINECT
-
-		{
-			m_arduinoSerial.update();
-			//m_moveEntity.getComponent<TransformComponent>().rotation = MyMath::toEulerAngles(m_arduinoSerial.getResultData()[0].orienatation);
-
-			Entity entity = { m_rightSaberHandle, m_pActiveScene.get() };
-			auto* pTransform = &entity.getComponent<TransformComponent>();
-			const Vector3f& right_arm_rotation = m_arduinoSerial.getFinalRotation(IMUJointType::Right_Arm);
-			pTransform->rotation.x = right_arm_rotation.z;
-			pTransform->rotation.z = right_arm_rotation.x;
-			pTransform->rotation.y = right_arm_rotation.y;
-
-			if (m_pKinectAPI->getJointUpdatedData()[JointType_HandRight].isTrakced)
-			{
-				pTransform->translation = m_pKinectAPI->getFinalData_Poisition(JointType_HandRight);
-			}
-
-			/*VOG_LOG_INFO("== Update Start==");
-			VOG_LOG_INFO("right arm rotation");
-			VOG_LOG_GLM(pTransform->rotation);*/
-
-			entity = { m_leftSaberHandle, m_pActiveScene.get() };
-			pTransform = &entity.getComponent<TransformComponent>();
-			const Vector3f& left_arm_rotation = m_arduinoSerial.getFinalRotation(IMUJointType::Left_Arm);
-
-			pTransform->rotation.x = -left_arm_rotation.z;
-			pTransform->rotation.z = left_arm_rotation.x;
-			pTransform->rotation.y = left_arm_rotation.y;
-
-			if (m_pKinectAPI->getJointUpdatedData()[JointType_HandLeft].isTrakced)
-			{
-				pTransform->translation = m_pKinectAPI->getFinalData_Poisition(JointType_HandLeft);
-			}
-
-			//VOG_LOG_INFO("left arm rotation");
-			//VOG_LOG_GLM(pTransform->rotation);
-			//VOG_LOG_INFO("== Update End==");
-		}
-
-		//auto data = m_pKinectAPI->getJointUpdatedData();
-		//auto& transform = m_pTestCubeEntity->getComponent<TransformComponent>();
-		//transform.rotation = MyMath::toEulerAngles(data[JointType_ElbowRight].rotation);
-		//transform.translation = data[JointType_ElbowRight].translation;
+		//updateMocap(timestep_);
 
 		// Resize
 		if (auto viewportSize = DeferredRenderer::getViewportSize();
@@ -873,6 +894,64 @@ namespace vog
 
 			RendererDebug::drawDebugSphere(ret_base_transform, color, thickness);
 			RendererDebug::drawDebugSphere(ret_tip_transform, color, thickness);
+		}
+	}
+
+	void vog::MocapLayer::updateMocap(float dt_)
+	{
+#ifdef VOG_ENABLE_KINECT
+		if (m_pKinectAPI)
+		{
+			m_pKinectAPI->onUpdate();
+		}
+		if (m_pKinectModel)
+		{
+			//m_modelEntity
+			m_pKinectAPI->onUpdateBonesTransfom(m_pKinectModel);
+		}
+#endif // VOG_ENABLE_KINECT
+
+		{
+			m_arduinoSerial.update();
+			//m_moveEntity.getComponent<TransformComponent>().rotation = MyMath::toEulerAngles(m_arduinoSerial.getResultData()[0].orienatation);
+
+			Entity entity = { m_rightSaberHandle, m_pActiveScene.get() };
+			auto* pTransform = &entity.getComponent<TransformComponent>();
+			const Vector3f& right_arm_rotation = m_arduinoSerial.getFinalRotation(IMUJointType::Right_Arm);
+			pTransform->rotation.x = right_arm_rotation.z;
+			pTransform->rotation.z = right_arm_rotation.x;
+			pTransform->rotation.y = right_arm_rotation.y;
+
+			if (m_pKinectAPI->getJointUpdatedData()[JointType_HandRight].isTrakced)
+			{
+				pTransform->translation = m_pKinectAPI->getFinalData_Poisition(JointType_HandRight);
+			}
+
+			/*VOG_LOG_INFO("== Update Start==");
+			VOG_LOG_INFO("right arm rotation");
+			VOG_LOG_GLM(pTransform->rotation);*/
+
+			entity = { m_leftSaberHandle, m_pActiveScene.get() };
+			pTransform = &entity.getComponent<TransformComponent>();
+			const Vector3f& left_arm_rotation = m_arduinoSerial.getFinalRotation(IMUJointType::Left_Arm);
+
+			pTransform->rotation.x = -left_arm_rotation.z;
+			pTransform->rotation.z = left_arm_rotation.x;
+			pTransform->rotation.y = left_arm_rotation.y;
+
+			if (m_pKinectAPI->getJointUpdatedData()[JointType_HandLeft].isTrakced)
+			{
+				pTransform->translation = m_pKinectAPI->getFinalData_Poisition(JointType_HandLeft);
+			}
+
+			//VOG_LOG_INFO("left arm rotation");
+			//VOG_LOG_GLM(pTransform->rotation);
+			//VOG_LOG_INFO("== Update End==");
+
+			//auto data = m_pKinectAPI->getJointUpdatedData();
+			//auto& transform = m_pTestCubeEntity->getComponent<TransformComponent>();
+			//transform.rotation = MyMath::toEulerAngles(data[JointType_ElbowRight].rotation);
+			//transform.translation = data[JointType_ElbowRight].translation;
 		}
 	}
 

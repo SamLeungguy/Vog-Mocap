@@ -89,7 +89,7 @@ struct Property
     float hasEmissionMap;
 
     vec4 albedo;
-    float shiness;
+    float shininess;
     vec4 emission;
     vec2 tilling;
     vec2 offset;
@@ -105,7 +105,7 @@ void main()
 
 	vec3 albedo     = mix(u_property.albedo, texture(u_albedo_map, uv) * u_property.albedo, u_property.hasAlbedoMap).rgb;
 	vec4 normal     = mix(vec4(v2f.normal, 1.0), texture(u_normal_map, uv), u_property.hasNormalMap);
-    float spec = mix(u_property.shiness, texture(u_specular_map, uv).r, u_property.hasSpecularMap);
+    float spec = mix(u_property.shininess, texture(u_specular_map, uv).r, u_property.hasSpecularMap);
     spec = log2(spec) / 10.5;
 
 	vec3 emission = mix(u_property.emission, texture(u_emission_map, uv) * u_property.emission, u_property.hasEmissionMap).rgb;

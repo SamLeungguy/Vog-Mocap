@@ -123,8 +123,6 @@ namespace vog {
 				light_position_cm.getComponent_unsafe(entityHandle).posiiton = Vector4f(transform.translation, 1.0f);
 				light_direction_cm.getComponent_unsafe(entityHandle).direction = MyMath::toQuaternion(transform.rotation) * Vector3f(0.0f, 0.0f, 1.0f);
 				params.y = 1.0f;
-				params.z = MyMath::cos(params.z);		// Inner angle
-				params.w = MyMath::cos(params.w);		// outer angle
 			}
 			else
 				VOG_CORE_ASSERT(0, "");

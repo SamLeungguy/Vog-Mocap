@@ -13,6 +13,7 @@ namespace demo_game
 		virtual ~RhythmCube() = default;
 
 		static std::array<std::string, 2> s_names;
+		ColorType::Color m_color;
 
 		virtual void onStart()
 		{

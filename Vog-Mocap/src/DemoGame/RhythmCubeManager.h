@@ -2,7 +2,7 @@
 #include <Vog.h>
 
 #include "ColorType.h"
-
+#include "RhythmCube.h"
 
 namespace demo_game
 {
@@ -28,7 +28,9 @@ namespace demo_game
 
 		int m_current_RhythmCount = 0;
 		float m_timer = 0;
-		float m_beat = 60.0f * 2.0f / 105.0f / 10.0f;
+		float m_beat = 60.0f * 2.0f / 105.0f / 1.0f;
+
+		float m_speed = 20.0f;
 
 		static constexpr int s_max_rhythmCube = 400;
 
@@ -102,7 +104,10 @@ namespace demo_game
 			transform.rotation = Vector3f(0.0f, 0.0f, 1.0f) * 90.0f * (float)MyRandom::get().Int(0, 4);
 
 			auto& rigidbody = entity.getComponent<RigidbodyComponent>();
-			rigidbody.velocity.z = 10.0f;
+			rigidbody.velocity.z = m_speed;
+
+			RhythmCube* cube = (RhythmCube*)entity.getComponent<NativeScriptComponent>().pInstance;
+			cube->m_color = colorType_;
 
 			transform.isEnable = true;
 

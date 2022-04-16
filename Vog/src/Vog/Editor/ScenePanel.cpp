@@ -385,8 +385,10 @@ namespace vog {
 
 				std::array<int, LightType::Count> type_ids = { 0, 1, 2, 3 };
 				std::array<std::string, LightType::Count> type_name_str = { "Point", "Directional", "Spot", "Area" };
-				
-				//ImGui::PushID(shaderName.c_str());
+				static int id = 0;
+				id++;
+
+				ImGui::PushID(id);
 				ImGui::Text("Type: ");
 				ImGui::SameLine();
 				if (ImGui::BeginCombo("", type_name_str[type].data()))
@@ -424,13 +426,16 @@ namespace vog {
 
 					float inner = MyMath::degrees(MyMath::acos(params.z));
 					ImGuiLibrary::drawDragFloat("Inner Angle", inner);
-					params.z = MyMath::radians(inner);
+					params.z = MyMath::cos(MyMath::radians(inner));
 
 					float outer = MyMath::degrees(MyMath::acos(params.w));
 					ImGuiLibrary::drawDragFloat("Outer Angle", outer);
-					params.w = MyMath::radians(outer);
+					params.w = MyMath::cos(MyMath::radians(outer));
 				}
 
+				id--;
+
+				ImGui::PopID();
 				//ImGui::NewLine();
 			});
 

@@ -65,7 +65,7 @@ namespace vog {
 		{
 			pDeferred_postprocess_material = Material::create(AssetManager::getShader("Deferred_Postprocess"));
 			if (pDeferred_postprocess_material->getLayout()->contains("u_exposure"))
-				pDeferred_postprocess_material->setFloat("u_exposure", 1.0f);
+				pDeferred_postprocess_material->setFloat("u_exposure", 0.1f);
 		}
 	}
 
