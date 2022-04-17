@@ -2,15 +2,7 @@
 
 #include "Control/VirtualMouse.h"
 
-#include "DemoGame/Boundary.h"
-#include "DemoGame/ColorType.h"
-#include "DemoGame/LightManager.h"
-#include "DemoGame/Player.h"
-#include "DemoGame/RhythmCube.h"
-#include "DemoGame/RhythmCubeManager.h"
-#include "DemoGame/Saber.h"
-#include "DemoGame/SaberTrail.h"
-#include "DemoGame/ScoreManager.h"
+
 
 namespace vog
 {
@@ -66,12 +58,12 @@ namespace vog
 
 #endif // 0
 
-		m_trail.init();
+		m_trail_left.init();
 	}
 
 	MocapLayer::~MocapLayer()
 	{
-		m_trail.destroy();
+		m_trail_left.destroy();
 	}
 
 	static Entity createRawCube(const std::string& name_, RefPtr<Scene>& pScene_)
@@ -120,21 +112,6 @@ namespace vog
 			light.getComponent<TransformComponent>().rotation = { MyMath::radians(150.0f), 0.0f, 0.0f };
 		}
 		auto pRhythm_emission_map = Texture2D::create("assets/textures/demo_game/hit_rhythm_emission_map.png");
-
-		// test trail
-		{
-			Entity entity = m_scenePanel.createSphere({}, "Trail");
-			auto* pNsc = &entity.addComponent<NativeScriptComponent>();
-			pNsc->bind<demo_game::SaberTrail>();
-			pNsc->pUeserData = &m_trail;
-
-			auto& mesh = entity.getComponent<MeshComponent>();
-			mesh.pVertexBuffer = m_trail.pVertexBuffer;
-			mesh.pIndexBuffer = m_trail.pIndexBuffer;
-
-			auto& meshRenderer = entity.getComponent<MeshRendererComponent>();
-			meshRenderer.pMaterial = Material::create(m_trail.pShader);
-		}
 
 		// setup object in scene
 		{
@@ -185,6 +162,25 @@ namespace vog
 				saber_left_child.getComponent<MeshRendererComponent>().pMaterial->setTexture2D("u_emission_map", m_pRedTexture);
 				saber_left_child.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.albedo", demo_game::ColorType::red_saber_albedo_color);
 				saber_left_child.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.emission", demo_game::ColorType::red_saber_emissive_color);
+
+				// test trail
+				{
+					Entity entity = m_scenePanel.createSphere({}, "Trail");
+					auto* pNsc = &entity.addComponent<NativeScriptComponent>();
+					pNsc->bind<demo_game::SaberTrail>();
+
+					m_saberTrailData_left.pTrail = &m_trail_left;
+					m_saberTrailData_left.target = m_leftSaberHandle;
+
+					pNsc->pUeserData = &m_saberTrailData_left;
+
+					auto& mesh = entity.getComponent<MeshComponent>();
+					mesh.pVertexBuffer = m_trail_left.pVertexBuffer;
+					mesh.pIndexBuffer = m_trail_left.pIndexBuffer;
+
+					auto& meshRenderer = entity.getComponent<MeshRendererComponent>();
+					meshRenderer.pMaterial = Material::create(m_trail_left.pShader);
+				}
 
 				auto saber_right_parent = m_pActiveScene->createEntity("saber_right");
 				m_rightSaberHandle = saber_right_parent;
@@ -620,6 +616,7 @@ namespace vog
 
 		ImGuiLibrary::drawCheckbox("Enable Collider Outline", m_isEnableColliderOutline);
 
+		m_trail_left.onImGuiRender();
 		
 
 		// Scene State

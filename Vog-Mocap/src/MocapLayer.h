@@ -12,6 +12,17 @@
 // test feature
 #include "Vog/Graphics/Features/Trail.h"
 
+// demo game
+#include "DemoGame/Boundary.h"
+#include "DemoGame/ColorType.h"
+#include "DemoGame/LightManager.h"
+#include "DemoGame/Player.h"
+#include "DemoGame/RhythmCube.h"
+#include "DemoGame/RhythmCubeManager.h"
+#include "DemoGame/Saber.h"
+#include "DemoGame/SaberTrail.h"
+#include "DemoGame/ScoreManager.h"
+
 namespace vog
 {
 	class MocapLayer : public Layer
@@ -99,6 +110,10 @@ namespace vog
 
 		uint32_t m_modelHandle;
 
-		Trail m_trail;
+		Trail m_trail_left;
+
+		demo_game::SaberTrail::Data m_saberTrailData_left;
+		demo_game::SaberTrail::Data m_saberTrailData_right;
+
 	};
 }

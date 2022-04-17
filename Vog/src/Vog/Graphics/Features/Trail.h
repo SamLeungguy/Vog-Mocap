@@ -21,8 +21,11 @@ namespace vog {
 
 	struct TrailNode
 	{
-		Vector3f position = Vector3f(0.0f);
+		Vector3f position0 = Vector3f(0.0f);
+		Vector3f position1 = Vector3f(0.0f);
+
 		float lifeTime = 0.0f;
+		bool isAdded = false;
 	};
 
 	class VOG_API Trail : public NonCopyable
@@ -36,12 +39,14 @@ namespace vog {
 
 		void update(float dt_);
 
-		void split(const TrailNode& node_);
+		void split(TrailNode& leftNode_, TrailNode& rightNode_, int depth_);
 
 		void setupMesh();
 		void draw();
 
-		void addPoint(Vector3f point_);
+		void addPoint(const Vector3f& point_, const Vector3f& right_);
+
+		void onImGuiRender();
 
 		uint32_t getIndexCount();
 

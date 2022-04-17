@@ -3,6 +3,8 @@
 
 #include <Vog/Resources/AssetManager.h>
 
+#include "Vog/ImGui/ImGuiLibrary.h"
+
 namespace vog {
 	Trail::~Trail()
 	{
@@ -82,60 +84,56 @@ namespace vog {
 
 	}
 
-	void Trail::split(const TrailNode& node_)
+	void Trail::split(TrailNode& leftNode_, TrailNode& rightNode_, int depth_)
 	{
+		static int max_depth = 6;
+		if (depth_ > max_depth)
+			return;
+
+		float total_width = width * 2;
+		float cos_angle = MyMath::dot((rightNode_.position1 - rightNode_.position0) / total_width, (leftNode_.position1 - leftNode_.position0) / total_width);
+
+		TrailNode new_node;
+
+		if (1 - cos_angle > spiltThreshold)
+		{
+			new_node.position0 = (leftNode_.position0 + rightNode_.position0) / 2.0f;
+			new_node.position1 = (leftNode_.position1 + rightNode_.position1) / 2.0f;
+			new_node.lifeTime = rightNode_.lifeTime;
+
+			split(leftNode_, new_node, depth_ + 1);
+			split(new_node, rightNode_, depth_ + 1);
+		}
+		else
+			new_node = rightNode_;
+
+		if (!new_node.isAdded)
+		{
+			nodes.push_back(new_node);
+			new_node.isAdded = true;
+		}
 	}
 
 	void Trail::setupMesh()
 	{
-		for (int i = 1; i < nodes.size(); i++)
+		for (int i = 0; i < nodes.size() && i < s_max_node_count; i++)
 		{
-			int v0_index = (i - 1) * 2 + 0;
-			int v1_index = (i - 1) * 2 + 1;
+			const auto& node = nodes[i];
+			auto& v0 = m_itVertices[2 * i];
+			auto& v1 = m_itVertices[2 * i + 1];
 
-			int v2_index = i * 2 + 0;
-			int v3_index = i * 2 + 1;
+			v0.position = node.position0;
+			v0.uv = Vector2f(node.lifeTime, 0.0f);
 
-			if (!(v0_index < s_max_vertices_count
-				&& v1_index < s_max_vertices_count
-				&& v2_index < s_max_vertices_count
-				&& v3_index < s_max_vertices_count))
-			{
-				int a = 0;
-			}
-
-			VOG_CORE_ASSERT(v0_index < s_max_vertices_count
-						 && v1_index < s_max_vertices_count
-						 && v2_index < s_max_vertices_count
-						 && v3_index < s_max_vertices_count, "");
-
-			auto& v0 = m_itVertices[v0_index];
-			auto& v1 = m_itVertices[v1_index];
-
-			auto& v2 = m_itVertices[v2_index];
-			auto& v3 = m_itVertices[v3_index];
-
-			const auto& first_center = nodes[i - 1].position;
-			const auto& second_center = nodes[i].position;
-
-			Vector3f direction = Vector3f(0.0f, 1.0f, 0.0f) * width;
-			v0.position = first_center - direction;
-			v0.uv = Vector2f(0.0f);
-
-			v1.position = first_center + direction;
-			v1.uv = Vector2f(0.0f, 1.0f);
-
-			v2.position = second_center - direction;
-			v2.uv = Vector2f(1.0f, 0.0f);
-
-			v3.position = second_center + direction;
-			v3.uv = Vector2f(1.0f);
+			v1.position = node.position1;
+			v1.uv = Vector2f(node.lifeTime, 1.0f);
 		}
 
 		if (nodes.size() > 1)
 		{
 			VOG_CORE_ASSERT(m_pVertices, "");
-			pVertexBuffer->setData(m_pVertices, (uint32_t)(sizeof(TrailVertexLayout) * nodes.size() * 2));
+			int count = (nodes.size() <= s_max_node_count) ? nodes.size() : s_max_node_count;
+			pVertexBuffer->setData(m_pVertices, (uint32_t)(sizeof(TrailVertexLayout) * count * 2));
 		}
 	}
 
@@ -144,13 +142,28 @@ namespace vog {
 		
 	}
 
-	void Trail::addPoint(Vector3f point_)
+	void Trail::addPoint(const Vector3f& point_, const Vector3f& right_)
 	{
-		if (nodes.size() < s_max_node_count)
+		TrailNode node;
+		node.position0 = point_ - right_ * width;
+		node.position1 = point_ + right_ * width;
+
+		if (nodes.size() == 0)
 		{
-			TrailNode node;
-			node.position = point_;
+			node.isAdded = true;
 			nodes.push_back(node);
 		}
+		else if (nodes.size() < s_max_node_count)
+		{
+			split(nodes[nodes.size() - 1], node, 0);
+		}
 	}
+
+	void Trail::onImGuiRender()
+	{
+		ImGuiLibrary::drawDragFloat("width", width);
+		ImGuiLibrary::drawDragFloat("lifeTime", lifeTime);
+		ImGuiLibrary::drawDragFloat("spiltThreshold", spiltThreshold);
+	}
+
 }

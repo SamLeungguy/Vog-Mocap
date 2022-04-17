@@ -13,21 +13,28 @@ namespace demo_game
 	class SaberTrail : public NativeScriptEntity
 	{
 	public:
-
-		Trail* pTrail = nullptr;
-
+		struct Data
+		{
+			Trail* pTrail = nullptr;
+			uint32_t target = 0;
+		};
+		Data m_data;
 		float m_timer = 0.0f;
 
 	public:
 		SaberTrail() = default;
 		virtual ~SaberTrail()
 		{
-			pTrail = nullptr;
+			m_data.pTrail = nullptr;
 		}
 
 		virtual void onStart()
 		{
-			pTrail = (Trail*)getComponent<NativeScriptComponent>().pUeserData;
+			Data* pData = (Data*)getComponent<NativeScriptComponent>().pUeserData;
+			m_data.pTrail = pData->pTrail;
+			m_data.target = pData->target;
+
+			VOG_ASSERT(m_data.target != 0, "");
 		};
 
 		virtual void onDestroy()
@@ -42,12 +49,13 @@ namespace demo_game
 				//pTrail->addPoint(getComponent<TransformComponent>().translation);
 				m_timer = 0.0f;
 			}
+			Entity targetEntity = { m_data.target, m_entity };
+			auto& transform = targetEntity.getComponent<TransformComponent>();
+			m_data.pTrail->addPoint(transform.translation, MyMath::toQuaternion(transform.rotation) * Vector3f(0.0f, 1.0f, 0.0f));
 
-			pTrail->addPoint(getComponent<TransformComponent>().translation);
+			m_data.pTrail->update(dt_);
 
-			pTrail->update(dt_);
-
-			getComponent<MeshComponent>().indexCount = pTrail->getIndexCount();
+			getComponent<MeshComponent>().indexCount = m_data.pTrail->getIndexCount();
 
 			m_timer += dt_;
 		};
