@@ -9,6 +9,9 @@
 #include "Kinect/KinectAPI.h"
 #include "Serial/ArduinoSerial.h"
 
+// test feature
+#include "Vog/Graphics/Features/Trail.h"
+
 namespace vog
 {
 	class MocapLayer : public Layer
@@ -96,6 +99,6 @@ namespace vog
 
 		uint32_t m_modelHandle;
 
-
+		Trail m_trail;
 	};
 }

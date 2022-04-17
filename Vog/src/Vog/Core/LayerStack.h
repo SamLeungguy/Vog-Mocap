@@ -14,6 +14,8 @@ namespace vog {
 		LayerStack() = default;
 		~LayerStack();
 
+		void destroy();
+
 		void pushLayer(Layer* layer_);
 		void popLayer(Layer* layer_);
 

@@ -253,7 +253,7 @@ namespace vog {
 					if (subMesh.nVertices > 0)		// is a submesh
 						RenderCommand::drawIndexBaseVertex(Primitive::Triangle, pVertexBuffer, pIndexBuffer, subMesh.baseVertexIndex, subMesh.baseIndex, subMesh.nIndices);
 					else
-						RenderCommand::drawIndex(Primitive::Triangle, submission.pVertexBuffer, submission.pIndexBuffer);
+						RenderCommand::drawIndex(Primitive::Triangle, submission.pVertexBuffer, submission.pIndexBuffer, submission.indexCount);
 				}
 			}
 
@@ -290,7 +290,7 @@ namespace vog {
 					if (subMesh.nVertices > 0)		// is a submesh
 						RenderCommand::drawIndexBaseVertex(Primitive::Triangle, pVertexBuffer, pIndexBuffer, subMesh.baseVertexIndex, subMesh.baseIndex, subMesh.nIndices);
 					else
-						RenderCommand::drawIndex(Primitive::Triangle, submission.pVertexBuffer, submission.pIndexBuffer);
+						RenderCommand::drawIndex(Primitive::Triangle, submission.pVertexBuffer, submission.pIndexBuffer, submission.indexCount);
 				}
 			}
 		}
@@ -354,6 +354,8 @@ namespace vog {
 			s_pData->geometryPass.getFramebuffer()->blit(s_pData->postprocessingPass.getFramebuffer()->getRendererID(),
 				(uint32_t)s_pData->screenParam.x, (uint32_t)s_pData->screenParam.y, BufferBitType::Depth);
 
+			RenderCommand::setEnableCullFace(false);		// TODO: temp remove
+
 			// foward render
 			{	
 				auto& pVertexArray = s_pData->pVertexArray;
@@ -380,7 +382,7 @@ namespace vog {
 					if (subMesh.nVertices > 0)		// is a submesh
 						RenderCommand::drawIndexBaseVertex(Primitive::Triangle, pVertexBuffer, pIndexBuffer, subMesh.baseVertexIndex, subMesh.baseIndex, subMesh.nIndices);
 					else
-						RenderCommand::drawIndex(Primitive::Triangle, submission.pVertexBuffer, submission.pIndexBuffer);
+						RenderCommand::drawIndex(Primitive::Triangle, submission.pVertexBuffer, submission.pIndexBuffer, submission.indexCount);
 				}
 
 				for (size_t i = 0; i < s_pData->forwardAnimatedSubmissions.size(); i++)
@@ -409,9 +411,12 @@ namespace vog {
 					if (subMesh.nVertices > 0)		// is a submesh
 						RenderCommand::drawIndexBaseVertex(Primitive::Triangle, pVertexBuffer, pIndexBuffer, subMesh.baseVertexIndex, subMesh.baseIndex, subMesh.nIndices);
 					else
-						RenderCommand::drawIndex(Primitive::Triangle, submission.pVertexBuffer, submission.pIndexBuffer);
+						RenderCommand::drawIndex(Primitive::Triangle, submission.pVertexBuffer, submission.pIndexBuffer, submission.indexCount);
 				}
 			}
+
+			RenderCommand::setEnableCullFace(true);
+
 
 			// skybox
 			{	

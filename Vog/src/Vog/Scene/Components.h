@@ -96,6 +96,8 @@ namespace vog {
 
 		RefPtr<VertexBuffer> pVertexBuffer;
 		RefPtr<IndexBuffer> pIndexBuffer;
+
+		uint32_t indexCount = 0;
 		// temp
 
 		bool isAnimated = false;		// TODO: the vertices should be struct of array instead of putting together

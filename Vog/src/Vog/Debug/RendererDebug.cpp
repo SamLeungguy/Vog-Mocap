@@ -255,7 +255,7 @@ namespace vog {
 		{
 			uint32_t dataSize = (uint32_t)((uint8_t*)s_pData->circleData.itCircleVertexBufferBase - (uint8_t*)s_pData->circleData.pCircleVertexBufferBase);
 			s_pData->circleData.pCircleVertexBuffer->setData(s_pData->circleData.pCircleVertexBufferBase, dataSize);
-			AssetManager::
+
 			AssetManager::getShader("Debug_Circle")->bind();
 			s_pData->circleData.pCircleVertexArray->bind();
 			RenderCommand::drawIndex(Primitive::Triangle, s_pData->circleData.pCircleVertexBuffer, s_pData->circleData.pIndexBuffer, s_pData->circleData.circleIndicesCount);

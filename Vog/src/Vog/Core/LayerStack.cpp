@@ -5,11 +5,17 @@ namespace vog {
 
 	LayerStack::~LayerStack()
 	{
+		destroy();
+	}
+
+	void LayerStack::destroy()
+	{
 		for (auto& layer : m_layerStack)
 		{
 			layer->onDetach();
 			delete layer;
 		}
+		m_layerStack.clear();
 	}
 
 	void LayerStack::pushLayer(Layer* layer_)

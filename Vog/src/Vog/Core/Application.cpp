@@ -41,6 +41,8 @@ namespace vog {
 
 	Application::~Application()
 	{
+		m_layerStack.destroy();
+
 		AssetManager::shuntdown();
 		//Gizmos::shuntdown();
 

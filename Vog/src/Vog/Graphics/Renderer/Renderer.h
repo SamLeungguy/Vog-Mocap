@@ -27,6 +27,8 @@ namespace vog {
 		const Matrix4f* pTransform = nullptr;
 		RefPtr<Material> pMaterial;
 
+		uint32_t indexCount = 0;
+
 		SubMesh subMesh;
 	};
 
@@ -36,6 +38,8 @@ namespace vog {
 		RefPtr<IndexBuffer> pIndexBuffer;
 		const Matrix4f* pTransform = nullptr;
 		RefPtr<Material> pMaterial;
+
+		uint32_t indexCount = 0;
 
 		SubMesh subMesh;
 		const std::vector<Matrix4f>* pBoneTransforms = nullptr;

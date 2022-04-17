@@ -34,6 +34,7 @@ namespace vog {
 			shaderLibrary.load("assets/shaders/Blur_Pingpong.glsl");
 			shaderLibrary.load("assets/shaders/Shadow_Mapping.glsl");
 			shaderLibrary.load("assets/shaders/Shadow_Mapping_Anim.glsl");
+			shaderLibrary.load("assets/shaders/Trail.glsl");
 		}
 
 		// Load defaule Textures

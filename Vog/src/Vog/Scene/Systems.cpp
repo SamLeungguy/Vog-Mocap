@@ -176,6 +176,8 @@ namespace vog {
 				submission.subMesh = mesh.subMesh;
 				submission.pBoneTransforms = &mesh.pModel->getBoneTransforms();
 
+				submission.indexCount = mesh.indexCount;
+
 				DeferredRenderer::submit(std::move(submission));
 			}
 			else
@@ -187,6 +189,8 @@ namespace vog {
 				submission.pMaterial = meshRenderer.pMaterial;
 				submission.pTransform = &transform.worldMatrix;
 				submission.subMesh = mesh.subMesh;
+
+				submission.indexCount = mesh.indexCount;
 
 				DeferredRenderer::submit(std::move(submission));
 			}

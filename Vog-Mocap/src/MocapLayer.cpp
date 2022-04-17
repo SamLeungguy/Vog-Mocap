@@ -9,6 +9,7 @@
 #include "DemoGame/RhythmCube.h"
 #include "DemoGame/RhythmCubeManager.h"
 #include "DemoGame/Saber.h"
+#include "DemoGame/SaberTrail.h"
 #include "DemoGame/ScoreManager.h"
 
 namespace vog
@@ -65,10 +66,12 @@ namespace vog
 
 #endif // 0
 
+		m_trail.init();
 	}
 
 	MocapLayer::~MocapLayer()
 	{
+		m_trail.destroy();
 	}
 
 	static Entity createRawCube(const std::string& name_, RefPtr<Scene>& pScene_)
@@ -117,6 +120,21 @@ namespace vog
 			light.getComponent<TransformComponent>().rotation = { MyMath::radians(150.0f), 0.0f, 0.0f };
 		}
 		auto pRhythm_emission_map = Texture2D::create("assets/textures/demo_game/hit_rhythm_emission_map.png");
+
+		// test trail
+		{
+			Entity entity = m_scenePanel.createSphere({}, "Trail");
+			auto* pNsc = &entity.addComponent<NativeScriptComponent>();
+			pNsc->bind<demo_game::SaberTrail>();
+			pNsc->pUeserData = &m_trail;
+
+			auto& mesh = entity.getComponent<MeshComponent>();
+			mesh.pVertexBuffer = m_trail.pVertexBuffer;
+			mesh.pIndexBuffer = m_trail.pIndexBuffer;
+
+			auto& meshRenderer = entity.getComponent<MeshRendererComponent>();
+			meshRenderer.pMaterial = Material::create(m_trail.pShader);
+		}
 
 		// setup object in scene
 		{
@@ -378,16 +396,13 @@ namespace vog
 					m_rhythmHandles.push_back(rhythmCube);
 				}
 			}
-		}
 
-		Entity lightEntity = { m_lightHandles[2], m_pActiveScene.get() };
-		auto* pLight_Params = &lightEntity.getComponent<LightComponent::Params>().params;
-		pLight_Params->z = 50.0f;
+			
+		}
 	}
 
 	void MocapLayer::onDetach()
 	{
-
 	}
 
 	void MocapLayer::onUpdate(float timestep_)
