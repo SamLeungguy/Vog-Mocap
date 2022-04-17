@@ -25,7 +25,7 @@ namespace vog {
 		Vector3f position1 = Vector3f(0.0f);
 
 		float lifeTime = 0.0f;
-		bool isAdded = false;
+		bool isBreakdown = false;
 	};
 
 	class VOG_API Trail : public NonCopyable
@@ -37,14 +37,15 @@ namespace vog {
 		void init();
 		void destroy();
 
-		void update(float dt_);
+		void update(float dt_, const Vector3f& point_, const Vector3f& right_);
 
 		void split(TrailNode& leftNode_, TrailNode& rightNode_, int depth_);
 
 		void setupMesh();
-		void draw();
 
 		void addPoint(const Vector3f& point_, const Vector3f& right_);
+		void addNode(TrailNode& node_, int depth_);
+		void updateNode(float dt_, const Vector3f& point_, const Vector3f& right_);
 
 		void onImGuiRender();
 
@@ -62,8 +63,8 @@ namespace vog {
 
 
 		float width = 2.0f;
-		float lifeTime = 1.0f;
-		float spiltThreshold = 0.1f;
+		float lifeTime = 5.0f;
+		float tolerance = 0.1f;
 
 	private:
 		static constexpr int s_max_node_count = 30;
@@ -73,8 +74,10 @@ namespace vog {
 		//ScopePtr<TrailVertexLayout[]> m_pVertices = nullptr;
 		TrailVertexLayout* m_itVertices = nullptr;
 		TrailVertexLayout* m_pVertices = nullptr;
+
+		int m_currentNode = 0;
 	};
 
-	inline uint32_t Trail::getIndexCount() { return nodes.size() > 1 ? (uint32_t)((nodes.size() - 1) * 2) : 0; }
+	inline uint32_t Trail::getIndexCount() { return 6 * (nodes.size() - m_currentNode - 1); }
 
 }
