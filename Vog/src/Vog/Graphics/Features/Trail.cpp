@@ -63,12 +63,8 @@ namespace vog {
 		pIndexBuffer.reset();
 	}
 
-	void Trail::update(float dt_)
+	void Trail::update_method0(float dt_, const Vector3f& point_, const Vector3f& direction_)
 	{
-		setupMesh();
-
-		draw();
-
 		for (size_t i = 0; i < nodes.size(); i++)
 		{
 			nodes[i].lifeTime += dt_;
@@ -80,29 +76,53 @@ namespace vog {
 				return node_.lifeTime > lifeTime;
 			}), nodes.end());
 
-		VOG_CORE_LOG_INFO("Node size: {0}", nodes.size());
+		_addPoint(point_, direction_);
 
+		setupMesh();
 	}
 
-	void Trail::split(TrailNode& leftNode_, TrailNode& rightNode_, int depth_)
+	void Trail::update_method1(float dt_, const Vector3f& point_, const Vector3f& direction_)
+	{
+		for (size_t i = 0; i < nodes.size(); i++)
+		{
+			nodes[i].lifeTime += dt_;
+		}
+
+		nodes.erase(std::remove_if(nodes.begin(), nodes.end(),
+			[&](const TrailNode& node_)
+			{
+				return node_.lifeTime > lifeTime;
+			}), nodes.end());
+
+
+		TrailNode node;
+		node.position0 = point_;
+		node.position1 = point_ + direction_ * width;
+
+		_addNode(node, 0);
+
+		setupMesh();
+	}
+
+	void Trail::_split(TrailNode& leftNode_, TrailNode& rightNode_, int depth_)
 	{
 		static int max_depth = 6;
 		if (depth_ > max_depth)
 			return;
 
-		float total_width = width * 2;
+		float total_width = width;
 		float cos_angle = MyMath::dot((rightNode_.position1 - rightNode_.position0) / total_width, (leftNode_.position1 - leftNode_.position0) / total_width);
 
 		TrailNode new_node;
 
-		if (1 - cos_angle > spiltThreshold)
+		if (1 - cos_angle > tolerance)
 		{
 			new_node.position0 = (leftNode_.position0 + rightNode_.position0) / 2.0f;
 			new_node.position1 = (leftNode_.position1 + rightNode_.position1) / 2.0f;
 			new_node.lifeTime = rightNode_.lifeTime;
 
-			split(leftNode_, new_node, depth_ + 1);
-			split(new_node, rightNode_, depth_ + 1);
+			_split(leftNode_, new_node, depth_ + 1);
+			_split(new_node, rightNode_, depth_ + 1);
 		}
 		else
 			new_node = rightNode_;
@@ -137,16 +157,11 @@ namespace vog {
 		}
 	}
 
-	void Trail::draw()
-	{
-
-	}
-
-	void Trail::addPoint(const Vector3f& point_, const Vector3f& right_)
+	void Trail::_addPoint(const Vector3f& point_, const Vector3f& direction_)
 	{
 		TrailNode node;
-		node.position0 = point_ - right_ * width;
-		node.position1 = point_ + right_ * width;
+		node.position0 = point_;
+		node.position1 = point_ + direction_ * width;
 
 		if (nodes.size() == 0)
 		{
@@ -155,16 +170,66 @@ namespace vog {
 		}
 		else if (nodes.size() < s_max_node_count)
 		{
-			split(nodes[nodes.size() - 1], node, 0);
+			_split(nodes[nodes.size() - 1], node, 0);
 		}
+	}
+
+	void Trail::_addNode(TrailNode& newNode_, int depth_)
+	{
+		constexpr int max_depth = 8;
+		if (depth_ > max_depth)
+			return;
+
+		if (nodes.size() == 0)
+		{
+			nodes.push_back(newNode_);
+			return;
+		}
+
+		const auto& last = nodes.back();
+		auto mid0 = (last.position0 + newNode_.position0) / 2.0f;
+		auto mid1 = (last.position1 + newNode_.position1) / 2.0f;
+
+		float distance = MyMath::distance(mid1, mid0);
+		float error = MyMath::absf(distance - width);
+		if (error < tolerance)
+		{
+			nodes.push_back(newNode_);
+			return;
+		}
+
+		TrailNode mid_node;
+		mid_node.position0 = mid0;
+		mid_node.position1 = mid0 + (mid1 - mid0) / distance * width;
+
+		_addNode(mid_node, depth_ + 1);
+		_addNode(newNode_, depth_ + 1);
 	}
 
 	void Trail::onImGuiRender()
 	{
 		ImGuiLibrary::drawDragFloat("width", width);
 		ImGuiLibrary::drawDragFloat("lifeTime", lifeTime);
-		ImGuiLibrary::drawDragFloat("spiltThreshold", spiltThreshold);
+		ImGuiLibrary::drawDragFloat("spiltThreshold", tolerance);
 		ImGuiLibrary::drawTextWithValue("Node size", nodes.size());
 	}
 
+	//void Trail::update(float dt_)
+	//{
+	//	setupMesh();
+
+	//	for (size_t i = 0; i < nodes.size(); i++)
+	//	{
+	//		nodes[i].lifeTime += dt_;
+	//	}
+
+	//	nodes.erase(std::remove_if(nodes.begin(), nodes.end(),
+	//		[&](const TrailNode& node_)
+	//		{
+	//			return node_.lifeTime > lifeTime;
+	//		}), nodes.end());
+
+	//	//VOG_CORE_LOG_INFO("Node size: {0}", nodes.size());
+
+	//}
 }

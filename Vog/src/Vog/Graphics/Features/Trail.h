@@ -37,14 +37,14 @@ namespace vog {
 		void init();
 		void destroy();
 
-		void update(float dt_);
+		void update_method0(float dt_, const Vector3f& point_, const Vector3f& direction_);
+		void update_method1(float dt_, const Vector3f& point_, const Vector3f& direction_);		// this is using reference method
 
-		void split(TrailNode& leftNode_, TrailNode& rightNode_, int depth_);
+		//void update(float dt_);
+
 
 		void setupMesh();
-		void draw();
 
-		void addPoint(const Vector3f& point_, const Vector3f& right_);
 
 		void onImGuiRender();
 
@@ -63,10 +63,16 @@ namespace vog {
 
 		float width = 2.0f;
 		float lifeTime = 1.0f;
-		float spiltThreshold = 0.1f;
+		float tolerance = 0.1f;
 
 	private:
-		static constexpr int s_max_node_count = 128;
+		void _addPoint(const Vector3f& point_, const Vector3f& direction_);
+		void _split(TrailNode& leftNode_, TrailNode& rightNode_, int depth_);
+
+		void _addNode(TrailNode& newNode_, int depth_);
+
+	private:
+		static constexpr int s_max_node_count = 32;
 		static constexpr int s_max_vertices_count = s_max_node_count * 2;
 		static constexpr int s_max_indices_count = (s_max_node_count - 1) * 6;
 
