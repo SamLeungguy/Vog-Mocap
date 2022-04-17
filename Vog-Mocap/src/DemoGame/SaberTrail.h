@@ -52,9 +52,11 @@ namespace demo_game
 			}
 			Entity targetEntity = { m_data.target, m_entity };
 			auto& transform = targetEntity.getComponent<TransformComponent>();
-			//m_data.pTrail->addPoint(transform.translation, MyMath::toQuaternion(transform.rotation) * Vector3f(0.0f, 1.0f, 0.0f));
+			m_data.pTrail->addPoint(transform.translation, MyMath::toQuaternion(transform.rotation) * Vector3f(0.0f, 1.0f, 0.0f));
 
-			m_data.pTrail->update(dt_, transform.translation, MyMath::toQuaternion(transform.rotation) * Vector3f(1.0f, 0.0f, 0.0f));
+			m_data.pTrail->update(dt_);
+
+			//m_data.pTrail->update(dt_, transform.translation, MyMath::toQuaternion(transform.rotation) * Vector3f(1.0f, 0.0f, 0.0f));
 
 			getComponent<MeshComponent>().indexCount = m_data.pTrail->getIndexCount();
 
