@@ -37,13 +37,12 @@ namespace vog {
 		void init();
 		void destroy();
 
-		void update_method0(float dt_, const Vector3f& point_, const Vector3f& direction_);
-		void update_method1(float dt_, const Vector3f& point_, const Vector3f& direction_);		// this is using reference method
+		void update_method0(float dt_, const Vector3f& point_, const Vector3f& direction_, const Quaternion& orientation_);
+		void update_method1(float dt_, const Vector3f& point_, const Vector3f& direction_, const Quaternion& orientation_);		// this is using reference method
 
 		//void update(float dt_);
 
 
-		void setupMesh();
 
 
 		void onImGuiRender();
@@ -60,7 +59,7 @@ namespace vog {
 
 		std::vector<TrailNode> nodes;
 
-
+		Vector3f offset = Vector3f(0.0f);
 		float width = 2.0f;
 		float lifeTime = 1.0f;
 		float tolerance = 0.1f;
@@ -70,6 +69,8 @@ namespace vog {
 		void _split(TrailNode& leftNode_, TrailNode& rightNode_, int depth_);
 
 		void _addNode(TrailNode& newNode_, int depth_);
+
+		void _setupMesh();
 
 	private:
 		static constexpr int s_max_node_count = 32;

@@ -54,7 +54,7 @@ namespace demo_game
 			auto& transform = targetEntity.getComponent<TransformComponent>();
 
 			//m_data.pTrail->update_method0(dt_, transform.translation, MyMath::toQuaternion(transform.rotation) * Vector3f(1.0f, 0.0f, 0.0f));
-			m_data.pTrail->update_method1(dt_, transform.translation, MyMath::toQuaternion(transform.rotation) * Vector3f(1.0f, 0.0f, 0.0f));
+			m_data.pTrail->update_method1(dt_, transform.translation, MyMath::toQuaternion(transform.rotation) * Vector3f(0.0f, 1.0f, 0.0f), MyMath::toQuaternion(transform.rotation));
 
 			getComponent<MeshComponent>().indexCount = m_data.pTrail->getIndexCount();
 

@@ -63,7 +63,7 @@ namespace vog {
 		pIndexBuffer.reset();
 	}
 
-	void Trail::update_method0(float dt_, const Vector3f& point_, const Vector3f& direction_)
+	void Trail::update_method0(float dt_, const Vector3f& point_, const Vector3f& direction_, const Quaternion& orientation_)
 	{
 		for (size_t i = 0; i < nodes.size(); i++)
 		{
@@ -78,10 +78,10 @@ namespace vog {
 
 		_addPoint(point_, direction_);
 
-		setupMesh();
+		_setupMesh();
 	}
 
-	void Trail::update_method1(float dt_, const Vector3f& point_, const Vector3f& direction_)
+	void Trail::update_method1(float dt_, const Vector3f& point_, const Vector3f& direction_, const Quaternion& orientation_)
 	{
 		for (size_t i = 0; i < nodes.size(); i++)
 		{
@@ -96,12 +96,12 @@ namespace vog {
 
 
 		TrailNode node;
-		node.position0 = point_;
-		node.position1 = point_ + direction_ * width;
+		node.position0 = orientation_ * offset + point_;
+		node.position1 = orientation_ * offset + point_ + direction_ * width;
 
 		_addNode(node, 0);
 
-		setupMesh();
+		_setupMesh();
 	}
 
 	void Trail::_split(TrailNode& leftNode_, TrailNode& rightNode_, int depth_)
@@ -134,7 +134,7 @@ namespace vog {
 		}
 	}
 
-	void Trail::setupMesh()
+	void Trail::_setupMesh()
 	{
 		for (int i = 0; i < nodes.size() && i < s_max_node_count; i++)
 		{
@@ -208,6 +208,7 @@ namespace vog {
 
 	void Trail::onImGuiRender()
 	{
+		ImGuiLibrary::drawDragFloat3("offset", offset);
 		ImGuiLibrary::drawDragFloat("width", width);
 		ImGuiLibrary::drawDragFloat("lifeTime", lifeTime);
 		ImGuiLibrary::drawDragFloat("spiltThreshold", tolerance);

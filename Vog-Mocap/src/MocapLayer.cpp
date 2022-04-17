@@ -596,8 +596,7 @@ namespace vog
 		//ImGui::Image(reinterpret_cast<void*>((uint64_t)DeferredRenderer::getReusltID(0)), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		ImGui::Image(reinterpret_cast<void*>((uint64_t)RendererDebug::getReusltID(0)), ImVec2{ m_viewportSize.x, m_viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
-		ImGui::GetForegroundDrawList()->AddText(ImGui::GetIO().FontDefault, 48.0f, {50.0f, 50.0f}, 0xffffffff, "Hello");
-
+		//ImGui::GetForegroundDrawList()->AddText(ImGui::GetIO().FontDefault, 48.0f, {50.0f, 50.0f}, 0xffffffff, "Hello");
 
 		//VOG_CORE_LOG_INFO("Framebuffer Texture id: {0}", DeferredRenderer::getReusltID(0));
 
