@@ -154,13 +154,13 @@ namespace vog {
 			Vector4f posiiton;
 			Position()
 			{
-				VOG_CORE_LOG_TRACE("Light position create!");
+				//VOG_CORE_LOG_TRACE("Light position create!");
 			}
 			Position(const Position&) = default;
 			//~Position() = default;
 			~Position()
 			{
-				VOG_CORE_LOG_TRACE("Light position destroy!");
+				//VOG_CORE_LOG_TRACE("Light position destroy!");
 			}
 
 		};
@@ -169,13 +169,13 @@ namespace vog {
 			Vector3f direction;
 			Direction()
 			{
-				VOG_CORE_LOG_TRACE("Light direction create!");
+				//VOG_CORE_LOG_TRACE("Light direction create!");
 			}
 			Direction(const Direction&) = default;
 			//~Position() = default;
 			~Direction()
 			{
-				VOG_CORE_LOG_TRACE("Light direction destroy!");
+				//VOG_CORE_LOG_TRACE("Light direction destroy!");
 			}
 		};
 		struct Color
@@ -262,7 +262,7 @@ namespace vog {
 		//NativeScriptComponent() = default;
 		~NativeScriptComponent()
 		{
-			VOG_CORE_LOG_TRACE("NativeScriptComponent destructor");
+			//VOG_CORE_LOG_TRACE("NativeScriptComponent destructor");
 
 			if (pInstance)
 			{
@@ -279,7 +279,7 @@ namespace vog {
 #if 1
 		NativeScriptComponent(const NativeScriptComponent& rhs_)
 		{
-			VOG_CORE_LOG_TRACE("NativeScriptComponent copy");
+			//VOG_CORE_LOG_TRACE("NativeScriptComponent copy");
 			//pInstance = rhs_.pInstance;
 			//rhs_.pInstance = nullptr;
 
@@ -289,7 +289,7 @@ namespace vog {
 		}
 		void operator=(const NativeScriptComponent& rhs_)
 		{
-			VOG_CORE_LOG_TRACE("NativeScriptComponent copy operator");
+			//VOG_CORE_LOG_TRACE("NativeScriptComponent copy operator");
 			if (this == &rhs_)
 				return;
 			if (pInstance)
@@ -305,7 +305,7 @@ namespace vog {
 
 		NativeScriptComponent(NativeScriptComponent&& rhs_)
 		{
-			VOG_CORE_LOG_TRACE("NativeScriptComponent move");
+			//VOG_CORE_LOG_TRACE("NativeScriptComponent move");
 			pInstance = rhs_.pInstance;
 			pInstantiateFunc = rhs_.pInstantiateFunc;
 			pUeserData = rhs_.pUeserData;
@@ -316,7 +316,7 @@ namespace vog {
 		}
 		void operator=(NativeScriptComponent&& rhs_)
 		{
-			VOG_CORE_LOG_TRACE("NativeScriptComponent move operator");
+			//VOG_CORE_LOG_TRACE("NativeScriptComponent move operator");
 			if (this == &rhs_)
 				return;
 			if (pInstance)

@@ -541,7 +541,7 @@ namespace vog {
 		entity_.m_pScene->m_ecs.addEntityComponent<LightComponent::Params>(entity_);
 		Light::s_current_light_count++;
 
-		VOG_CORE_LOG_INFO("current light count: {0}", Light::s_current_light_count);
+		//VOG_CORE_LOG_INFO("current light count: {0}", Light::s_current_light_count);
 	}
 
 	template<> void Scene::_onComponentAdded(Entity entity_, NativeScriptComponent& component_)
@@ -586,7 +586,7 @@ namespace vog {
 		entity_.m_pScene->m_ecs.removeEntityComponent<LightComponent::Params>(entity_);
 
 		Light::s_current_light_count--;
-		VOG_CORE_LOG_INFO("current light count: {0}", Light::s_current_light_count);
+		//VOG_CORE_LOG_INFO("current light count: {0}", Light::s_current_light_count);
 	}
 
 	template<> void Scene::_onComponentRemoved<IDComponent>						(Entity entity_) {}
