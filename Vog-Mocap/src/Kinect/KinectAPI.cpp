@@ -334,6 +334,8 @@ namespace vog {
 						_setHandIsClosed(m_isLeftHandClosed, leftHandState);
 						_setHandIsClosed(m_isRightHandClosed, rightHandState);
 
+						//VOG_LOG_INFO("===Start===");
+
 						// set kinect animation
 						for (uint32_t i = 0; i < m_jointUpdatedData.size(); i++)
 						{
@@ -351,7 +353,13 @@ namespace vog {
 														jointOrientations[i].Orientation.y, jointOrientations[i].Orientation.z };
 
 							m_jointUpdatedData[i] = data;
+
+							//VOG_LOG_INFO(KinectJointTypeToString((JointType)i));
+							//VOG_LOG_INFO("Translation: <{0}, {1}, {2}>", data.translation.x, data.translation.y, data.translation.z);
+							//VOG_LOG_INFO("Rotation: <{0}, {1}, {2}, {3}>", data.rotation.w, data.rotation.x, data.rotation.y, data.rotation.z);
 						}
+
+						//VOG_LOG_INFO("===End===");
 
 						if (m_isCalibrating)
 						{

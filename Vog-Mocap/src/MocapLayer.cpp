@@ -142,6 +142,7 @@ namespace vog
 				saber_left_capsule.radius = 0.25f;
 
 				auto saber_left = m_pActiveScene->loadModel("assets/meshes/light_saber/light_saber.obj", saber_left_parent);
+				saber_left.getComponent<TransformComponent>().rotation = Vector3f(0.0f, MyMath::radians(180.0f), 0.0f);
 				auto saber_left_child_handle = saber_left.getComponent<ecs::HierarchyComponent>().children[0];
 				auto saber_left_child = Entity{ saber_left_child_handle, m_pActiveScene.get() };
 				saber_left_child.getComponent<MeshRendererComponent>().pMaterial->setTexture2D("u_emission_map", m_pRedTexture);
@@ -178,6 +179,7 @@ namespace vog
 				auto saber_right_parent = m_pActiveScene->createEntity("saber_right");
 				m_rightSaberHandle = saber_right_parent;
 				auto saber_right = m_pActiveScene->duplicateEntity(saber_left, saber_right_parent);
+				saber_right.getComponent<TransformComponent>().rotation = Vector3f(0.0f, MyMath::radians(180.0f), 0.0f);
 				pNSC = &saber_right_parent.addComponent<NativeScriptComponent>();
 				pNSC->bind<demo_game::Saber>();
 				saber_right_parent.addComponent<RigidbodyComponent>();
@@ -412,7 +414,7 @@ namespace vog
 
 	void MocapLayer::onUpdate(float timestep_)
 	{
-		//updateMocap(timestep_);
+		updateMocap(timestep_);
 
 		// Resize
 		if (auto viewportSize = DeferredRenderer::getViewportSize();

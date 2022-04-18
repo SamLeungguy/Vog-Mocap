@@ -63,10 +63,10 @@ namespace demo_game
 			if (!pCube)
 				return;
 
-			if (m_color != pCube->m_color)
+			/*if (m_color != pCube->m_color)
 			{
 				return;
-			}
+			}*/
 
 			LightManager::get().setColor(m_color);
 

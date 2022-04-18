@@ -112,7 +112,6 @@ void setup() {
             int_IMU = true;
             // get expected DMP packet size for later comparison
             packetSize = IMU.dmpGetFIFOPacketSize();
-            active_pin[] = pins[i];
             g_active_imu_count++;
             
         } else {
