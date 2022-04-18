@@ -38,6 +38,8 @@ namespace vog {
 		//virtual void setSencilFunc(DepthFuncConfig config_) override;
 
 #pragma region Enable_XX
+		virtual void setEnableBlending(bool isEnable_) override;
+
 		virtual void setEnableCullFace(bool isEnable_) override;
 		virtual void setEnableMutliSample(bool isMutliSample_) override;
 		virtual void setEnableDepthTest(bool isEnable_) override;

@@ -59,11 +59,13 @@ namespace vog
 #endif // 0
 
 		m_trail_left.init();
+		m_trail_right.init();
 	}
 
 	MocapLayer::~MocapLayer()
 	{
 		m_trail_left.destroy();
+		m_trail_right.destroy();
 	}
 
 	static Entity createRawCube(const std::string& name_, RefPtr<Scene>& pScene_)
@@ -127,23 +129,6 @@ namespace vog
 			data = 0xffffffff;
 			m_pWhiteTexture->setData(&data, sizeof(uint32_t));
 
-			//// set up rhythmCube
-			//{
-			//	auto rhythmCube = m_scenePanel.createOBB({}, "RhythmCube_red");
-			//	rhythmCube.addComponent<NativeScriptComponent>().bind<demo_game::RhythmCube>();
-			//	rhythmCube.getComponent<MeshRendererComponent>().pMaterial->setTexture2D("u_emission_map", pRhythm_emission_map);
-			//	rhythmCube.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.albedo", { 0.5f, 0.1f, 0.1f, 1.0f });
-			//	rhythmCube.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.emission", { 100.0, 5.0f, 5.0f, 1.0f });
-			//	rhythmCube.getComponent<MeshRendererComponent>().pMaterial->setFloat("u_property.shiness", 32.0f);
-
-			//	rhythmCube = m_scenePanel.createOBB({}, "RhythmCube_blue");
-			//	rhythmCube.addComponent<NativeScriptComponent>().bind<demo_game::RhythmCube>();
-			//	rhythmCube.getComponent<MeshRendererComponent>().pMaterial->setTexture2D("u_emission_map", pRhythm_emission_map);
-			//	rhythmCube.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.albedo", { 0.0f, 0.1f, 0.9f, 1.0f });
-			//	rhythmCube.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.emission", { 1.0, 20.0f, 100.0f, 1.0f });
-			//	rhythmCube.getComponent<MeshRendererComponent>().pMaterial->setFloat("u_property.shiness", 32.0f);
-			//}
-
 			//set up saber
 			{
 				auto saber_left_parent = m_pActiveScene->createEntity("saber_left");
@@ -163,11 +148,15 @@ namespace vog
 				saber_left_child.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.albedo", demo_game::ColorType::red_saber_albedo_color);
 				saber_left_child.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.emission", demo_game::ColorType::red_saber_emissive_color);
 
-				// test trail
+				// Left trail
 				{
-					Entity entity = m_scenePanel.createSphere({}, "Trail");
+					Entity entity = m_scenePanel.createSphere({}, "Left Trail");
 					auto* pNsc = &entity.addComponent<NativeScriptComponent>();
 					pNsc->bind<demo_game::SaberTrail>();
+
+					m_trail_left.width = 11.45f;
+					m_trail_left.lifeTime = 0.3f;
+					m_trail_left.offset.y = 0.22f;
 
 					m_saberTrailData_left.pTrail = &m_trail_left;
 					m_saberTrailData_left.target = m_leftSaberHandle;
@@ -180,6 +169,10 @@ namespace vog
 
 					auto& meshRenderer = entity.getComponent<MeshRendererComponent>();
 					meshRenderer.pMaterial = Material::create(m_trail_left.pShader);
+					meshRenderer.pMaterial->setTexture2D("u_texture", m_pRedTexture);
+					auto emmision = demo_game::ColorType::red_saber_emissive_color;
+					emmision.w = 0.1f;
+					meshRenderer.pMaterial->setFloat4("u_emission", emmision);
 				}
 
 				auto saber_right_parent = m_pActiveScene->createEntity("saber_right");
@@ -200,6 +193,33 @@ namespace vog
 				saber_right_child.getComponent<MeshRendererComponent>().pMaterial->setTexture2D("u_emission_map", m_pBlueTexture);
 				saber_right_child.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.albedo", demo_game::ColorType::blue_saber_albedo_color);
 				saber_right_child.getComponent<MeshRendererComponent>().pMaterial->setFloat4("u_property.emission", demo_game::ColorType::blue_saber_emissive_color);
+
+				// Right trail
+				{
+					Entity entity = m_scenePanel.createSphere({}, "Right Trail");
+					auto* pNsc = &entity.addComponent<NativeScriptComponent>();
+					pNsc->bind<demo_game::SaberTrail>();
+
+					m_trail_right.width = 11.45f;
+					m_trail_right.lifeTime = 0.3f;
+					m_trail_right.offset.y = 0.22f;
+
+					m_saberTrailData_right.pTrail = &m_trail_right;
+					m_saberTrailData_right.target = m_rightSaberHandle;
+
+					pNsc->pUeserData = &m_saberTrailData_right;
+
+					auto& mesh = entity.getComponent<MeshComponent>();
+					mesh.pVertexBuffer = m_trail_right.pVertexBuffer;
+					mesh.pIndexBuffer = m_trail_right.pIndexBuffer;
+
+					auto& meshRenderer = entity.getComponent<MeshRendererComponent>();
+					meshRenderer.pMaterial = Material::create(m_trail_right.pShader);
+					meshRenderer.pMaterial->setTexture2D("u_texture", m_pBlueTexture);
+					auto emmision = demo_game::ColorType::blue_saber_emissive_color;
+					emmision.w = 0.1f;
+					meshRenderer.pMaterial->setFloat4("u_emission", emmision);
+				}
 			}
 
 			// set up scene
@@ -331,7 +351,7 @@ namespace vog
 
 				m_lightHandles.push_back(lightEntity);			// [1]
 
-				for (size_t i = 2; i < demo_game::LightManager::s_max_count; i++)
+				for (size_t i = 1; i < demo_game::LightManager::s_max_count; i++)
 				{
 					Entity lightEntity = m_scenePanel.createLight({}, "Light");
 					auto* pType = &lightEntity.getComponent<LightComponent::Type>();
@@ -340,21 +360,15 @@ namespace vog
 					auto* pLight_Colors = &lightEntity.getComponent<LightComponent::Color>().color;
 					auto* pLight_Params = &lightEntity.getComponent<LightComponent::Params>().params;
 					*pLight_Colors = Vector4f(MyRandom::Vec3f(1.0f, 5.0f), 1.0f);
-					pLight_Colors->a = MyRandom::Float(2.0f, 4.0f);
+					pLight_Colors->a = MyRandom::Float(90.0f, 120.0f);
 					pLight_Params->x = MyRandom::Float(5.0f, 10.0f);
 					float inner_angle = 10.0f;
 					pLight_Params->z = MyMath::cos(MyMath::radians(inner_angle));
 					pLight_Params->w = MyMath::cos(MyMath::radians(MyRandom::Float(inner_angle + 10.0f, inner_angle + 40.0f)));
 
-					/*pLight_Params->z = 1.0f;
-					pLight_Params->w = i * 1.0f;*/
-
 					auto& transform = lightEntity.getComponent<TransformComponent>();
 					transform.translation.x = MyRandom::Float(-10.0f, 10.0f);
 					transform.translation.y = MyRandom::Float(1.0f, 5.0f);
-
-					//VOG_LOG_GLM(transform.translation);
-					//VOG_LOG_INFO("y: {}");
 
 					//transform.isEnable = false;
 					transform.translation.z -= i * 5.0f - 5.0f;
@@ -363,9 +377,6 @@ namespace vog
 
 					m_lightHandles.push_back(lightEntity);
 				}
-
-				
-
 			}
 
 			// set up rhythmManager
@@ -392,8 +403,6 @@ namespace vog
 					m_rhythmHandles.push_back(rhythmCube);
 				}
 			}
-
-			
 		}
 	}
 
@@ -612,8 +621,9 @@ namespace vog
 
 		ImGuiLibrary::drawDragFloat("Camera Speed", m_cameraController.getSpeed());
 		ImGuiLibrary::drawDragFloat("Camera Rotation Speed", m_cameraController.getRotationtSpeed());
-
+		
 		ImGuiLibrary::drawCheckbox("Enable Collider Outline", m_isEnableColliderOutline);
+		ImGuiLibrary::drawCheckbox("Enable Light Outline", m_isEnableLightOutline);
 
 		m_trail_left.onImGuiRender();
 		
@@ -1007,7 +1017,8 @@ namespace vog
 		if (m_isEnableColliderOutline)
 			renderColliderOutline();
 
-		renderLightOutline();
+		if (m_isEnableLightOutline)
+			renderLightOutline();
 
 		RendererDebug::drawAxis_XYZ();
 

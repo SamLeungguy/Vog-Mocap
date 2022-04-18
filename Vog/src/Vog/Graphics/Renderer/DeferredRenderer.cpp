@@ -219,6 +219,7 @@ namespace vog {
 
 		RenderCommand::setDepthMask(true);
 		RenderCommand::setEnableDepthTest(true);
+		RenderCommand::setEnableBlending(false);
 
 		// === geo pass
 		{
@@ -350,6 +351,8 @@ namespace vog {
 #if 1
 		// forward pass
 		{	
+			RenderCommand::setEnableBlending(true);
+
 			RenderCommand::setDepthMask(true);
 			s_pData->geometryPass.getFramebuffer()->blit(s_pData->postprocessingPass.getFramebuffer()->getRendererID(),
 				(uint32_t)s_pData->screenParam.x, (uint32_t)s_pData->screenParam.y, BufferBitType::Depth);
@@ -416,7 +419,6 @@ namespace vog {
 			}
 
 			RenderCommand::setEnableCullFace(true);
-
 
 			// skybox
 			{	

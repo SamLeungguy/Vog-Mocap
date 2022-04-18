@@ -152,7 +152,7 @@ namespace vog {
 		if (nodes.size() > 1)
 		{
 			VOG_CORE_ASSERT(m_pVertices, "");
-			int count = (nodes.size() <= s_max_node_count) ? nodes.size() : s_max_node_count;
+			size_t count = (nodes.size() <= s_max_node_count) ? nodes.size() : s_max_node_count;
 			pVertexBuffer->setData(m_pVertices, (uint32_t)(sizeof(TrailVertexLayout) * count * 2));
 		}
 	}

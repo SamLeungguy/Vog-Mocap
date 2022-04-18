@@ -37,6 +37,8 @@ namespace vog {
 		//inline static void setSencilFunc(DepthFuncConfig config_);
 
 #pragma region Enale_XX
+		inline static void setEnableBlending(bool isEnable_) { s_pInstance->setEnableBlending(isEnable_); }
+
 		inline static void setEnableCullFace(bool isEnable_) { s_pInstance->setEnableCullFace(isEnable_); }
 		inline static void setEnableDepthTest(bool isEnable_) { s_pInstance->setEnableDepthTest(isEnable_); }
 		inline static void setEnableMutliSample(bool isMutliSample_) { s_pInstance->setEnableMutliSample(isMutliSample_); }

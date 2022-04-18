@@ -79,10 +79,11 @@ namespace demo_game
 			auto cos_angle = MyMath::dot(saber_up, cube_up);
 			if (cos_angle > 0.95f)
 			{
-				VOG_LOG_INFO("Hitted cube!");
-				RhythmCubeManager::get().destroyRythm(other);
-
+				//OG_LOG_INFO("Hitted cube!");
 			}
+
+			RhythmCubeManager::get().destroyRythm(other);
+
 
 			/*auto dir = getComponent<TransformComponent>().translation - prev_position;
 			dir = MyMath::normalize(dir);

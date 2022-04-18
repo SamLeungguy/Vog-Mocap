@@ -33,6 +33,7 @@ void main()
 #version 450 core
 			
 layout(location = 0) out vec4 o_color;
+layout(location = 1) out vec4 o_brightColor;
 
 in VertexData
 {
@@ -42,8 +43,15 @@ in VertexData
 } v2f;
 
 layout(binding = 0) uniform sampler2D u_texture;
+uniform vec4 u_emission;
 
 void main()
 {
-	o_color = texture(u_texture, v2f.texCoord);
+    vec3 color = texture(u_texture, v2f.texCoord).rgb;
+	o_color = vec4(color * u_emission.rgb * 5.0f, u_emission.a);
+
+    // bright for blur
+    float brightness = dot(o_color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    brightness = step(1.0, brightness);
+    o_brightColor = vec4(mix(vec3(0.0), o_color.rgb, vec3(brightness)), 1.0f);
 }

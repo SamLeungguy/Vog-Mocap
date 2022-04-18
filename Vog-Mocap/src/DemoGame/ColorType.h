@@ -24,29 +24,10 @@ namespace demo_game
 		static constexpr Vector4f blue_plane_albedo_color = { 1.0f, 10.0f, 30.0f, 1.0f };
 		static constexpr Vector4f red_plane_albedo_color = { 40.0f, 1.0f, 1.0f, 1.0f };
 
-		/*virtual void onStart()
-		{
-		};
 
-		virtual void onDestroy()
-		{
-		};
+		//static ColorType&
 
-		virtual void onUpdate(float dt_)
-		{
-		};
-
-		virtual void onTriggerEnter(uint32_t handle_) override
-		{
-		};
-
-		virtual void onTriggerStay(uint32_t handle_) override
-		{
-		};
-
-		virtual void onTriggerExit(uint32_t handle_) override
-		{
-
-		};*/
+	private:
+		static ColorType* s_pInstance;
 	};
 }

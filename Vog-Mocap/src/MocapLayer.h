@@ -71,6 +71,7 @@ namespace vog
 
 		ScenePanel m_scenePanel;
 		bool m_isEnableColliderOutline = true;
+		bool m_isEnableLightOutline = true;
 
 		RefPtr<Texture2D> m_pRedTexture;
 		RefPtr<Texture2D> m_pBlueTexture;
@@ -111,6 +112,7 @@ namespace vog
 		uint32_t m_modelHandle;
 
 		Trail m_trail_left;
+		Trail m_trail_right;
 
 		demo_game::SaberTrail::Data m_saberTrailData_left;
 		demo_game::SaberTrail::Data m_saberTrailData_right;

@@ -108,7 +108,7 @@ float shadowCalculation(vec4 lightSpace_pos_, vec3 ws_pos_, vec3 normal_, vec3 l
 
 vec4 directionalLight(vec3 ws_pos_, vec3 normal_, vec4 albedo_)
 {
-    vec3 o_lighting = vec3(0.0, 0.0, 0.0);
+ vec3 o_lighting = vec3(0.0, 0.0, 0.0);
     vec3 viewDir = normalize(u_camera_position - ws_pos_);
 
     float shadow = shadowCalculation(u_lightSpace_matrix * vec4(ws_pos_, 1.0), ws_pos_, normal_, u_light_positions[0].xyz);
@@ -117,9 +117,9 @@ vec4 directionalLight(vec3 ws_pos_, vec3 normal_, vec4 albedo_)
     vec3 diffuseColor = albedo_.rgb;
     vec3 specularColor = vec3(1, 1, 1);
 
-    //float shininess  = albedo_.a;
-    float shininess  = pow(2.0, albedo_.a * 10.5);
-    shininess  = 64.0f;
+    //float shiness = albedo_.a;
+    float shiness = pow(2.0, albedo_.a * 10.5);
+    shiness = 32.0f;
 
     vec3 lightColor 		= u_light_colors[0].rgb;
     float lightIntensity 	= u_light_colors[0].a;
@@ -147,12 +147,12 @@ vec4 directionalLight(vec3 ws_pos_, vec3 normal_, vec4 albedo_)
     vec3 reflectDir = reflect(L, normal_);
     vec3 H = normalize(L + viewDir);
     float specularIntensity = mix(0.0, 0.4, diffuseIntensity);
-    //vec3 specular = specularIntensity * specularColor * pow(max(dot(viewDir, reflectDir), 0.0), shininess );
-    vec3 specular = specularIntensity * specularColor * pow(max(dot(normal_, H), 0.0), shininess );
+    //vec3 specular = specularIntensity * specularColor * pow(max(dot(viewDir, reflectDir), 0.0), shiness);
+    vec3 specular = specularIntensity * specularColor * pow(max(dot(normal_, H), 0.0), shiness);
 
     //float attenuation = 1.0 - clamp(lengthSq / (lightRange * lightRange + 1), 0.0, 1.0);
     float attenuation = 1.0 - lengthSq / (lightRange * lightRange + 1);
-    //attenuation = 1.0 / (lengthSq + 1.0);
+    attenuation = 1.0 / (lengthSq + 1.0);
 
     float intensity = lightIntensity * attenuation;
 
@@ -176,9 +176,9 @@ vec4 phongLight(vec3 ws_pos_, vec3 normal_, vec4 albedo_)
     vec3 diffuseColor = albedo_.rgb;
     vec3 specularColor = vec3(1, 1, 1);
 
-    //float shininess  = albedo_.a;
-    float shininess  = pow(2.0, albedo_.a * 10.5);
-    shininess  = 32.0f;
+    //float shiness = albedo_.a;
+    float shiness = pow(2.0, albedo_.a * 10.5);
+    shiness = 32.0f;
 
     for(int i = 1; i < u_current_light_count; ++i)
     {
@@ -208,11 +208,12 @@ vec4 phongLight(vec3 ws_pos_, vec3 normal_, vec4 albedo_)
         vec3 reflectDir = reflect(L, normal_);
         vec3 H = normalize(L + viewDir);
         float specularIntensity = mix(0.0, 0.4, diffuseIntensity);
-        //vec3 specular = specularIntensity * specularColor * pow(max(dot(viewDir, reflectDir), 0.0), shininess );
-        vec3 specular = specularIntensity * specularColor * pow(max(dot(normal_, H), 0.0), shininess );
+        //vec3 specular = specularIntensity * specularColor * pow(max(dot(viewDir, reflectDir), 0.0), shiness);
+        vec3 specular = specularIntensity * specularColor * pow(max(dot(normal_, H), 0.0), shiness);
 
-        float attenuation = 1.0 - clamp(lengthSq / (lightRange * lightRange + 1), 0.0, 1.0);
-        //attenuation = 1.0 / (lengthSq + 1.0);
+        //float attenuation = 1.0 - clamp(lengthSq / (lightRange * lightRange + 1), 0.0, 1.0);
+        float attenuation = 1.0 - lengthSq / (lightRange * lightRange + 1);
+        attenuation = 1.0 / (lengthSq + 1.0);
 
         float intensity = lightIntensity * attenuation;
 

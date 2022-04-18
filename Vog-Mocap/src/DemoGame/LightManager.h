@@ -9,7 +9,7 @@ namespace demo_game
 	class LightManager : public NativeScriptEntity
 	{
 	public:
-		static constexpr int s_max_count = 4;
+		static constexpr int s_max_count = 20;
 		std::vector<uint32_t>* m_pLightHandles;
 
 		float m_timer = 0.0f;

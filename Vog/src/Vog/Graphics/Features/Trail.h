@@ -73,7 +73,7 @@ namespace vog {
 		void _setupMesh();
 
 	private:
-		static constexpr int s_max_node_count = 32;
+		static constexpr int s_max_node_count = 128;
 		static constexpr int s_max_vertices_count = s_max_node_count * 2;
 		static constexpr int s_max_indices_count = (s_max_node_count - 1) * 6;
 
@@ -89,7 +89,7 @@ namespace vog {
 		else if (nodes.size() < 1)
 			return 0;
 		else
-			return (nodes.size() - 1) * 6;
+			return static_cast<uint32_t>((nodes.size() - 1) * 6);
 	}
 
 }

@@ -87,6 +87,19 @@ namespace vog {
 		glDebugCall(glDepthFunc(Utils::toOpenGLDepthFuncConfig(config_)));
 	}
 
+	void OpenGLGraphicsAPI::setEnableBlending(bool isEnable_)
+	{
+		if (isEnable_)
+		{
+			glDebugCall(glEnable(GL_BLEND));
+			glDebugCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+		}
+		else
+		{
+			glDebugCall(glDisable(GL_BLEND));
+		}
+	}
+
 	void OpenGLGraphicsAPI::setEnableCullFace(bool isEnable_)
 	{
 		if (isEnable_)
