@@ -379,7 +379,7 @@ namespace vog::ecs {
 	template<typename T>
 	inline ComponentManager<T>::~ComponentManager()
 	{
-		VOG_CORE_LOG_TRACE("ComponentManager dtor");
+		//VOG_CORE_LOG_TRACE("ComponentManager dtor");
 	}
 
 	template<typename ComponentType>

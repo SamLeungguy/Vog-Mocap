@@ -63,11 +63,6 @@ namespace vog {
 		VOG_ASSERT(ret == S_OK, "Can't get Coordinate Mapper");
 
 		Sample::TRANSFORM_SMOOTH_PARAMETERS smoothingParams;
-		//smoothingParams.fSmoothing = 0.25f; // [0..1], lower values closer to raw data
-		//smoothingParams.fCorrection = 0.25f; // [0..1], lower values slower to correct towards the raw data
-		//smoothingParams.fPrediction = 0.25f; // [0..n], the number of frames to predict into the future
-		//smoothingParams.fJitterRadius = 0.03f; // The radius in meters for jitter reduction
-		//smoothingParams.fMaxDeviationRadius = 0.05f; // The maximum radius in meters that filtered positions are allowed to deviate from raw data
 
 		smoothingParams.fSmoothing = 0.75f; // [0..1], lower values closer to raw data
 		smoothingParams.fCorrection = 0.25f * 2; // [0..1], lower values slower to correct towards the raw data
@@ -166,27 +161,6 @@ namespace vog {
 				}
 			}
 		}
-
-		//static Sample::TRANSFORM_SMOOTH_PARAMETERS smoothingParams;
-		//static bool isReset = false;
-
-		//ImGuiLibrary::drawCheckbox("isReset", isReset);
-		//if (isReset)
-		//{
-		//	smoothingParams.fSmoothing = 0.25f; // [0..1], lower values closer to raw data
-		//	smoothingParams.fCorrection = 0.25f; // [0..1], lower values slower to correct towards the raw data
-		//	smoothingParams.fPrediction = 0.25f; // [0..n], the number of frames to predict into the future
-		//	smoothingParams.fJitterRadius = 0.03f; // The radius in meters for jitter reduction
-		//	smoothingParams.fMaxDeviationRadius = 0.05f; // The maximum radius in meters that filtered positions are allowed to deviate from raw data
-		//}
-		//ImGuiLibrary::drawDragFloat("fSmoothing", smoothingParams.fSmoothing);
-		//ImGuiLibrary::drawDragFloat("fCorrection", smoothingParams.fCorrection);
-		//ImGuiLibrary::drawDragFloat("fPrediction", smoothingParams.fPrediction);
-		//ImGuiLibrary::drawDragFloat("fJitterRadius", smoothingParams.fJitterRadius);
-		//ImGuiLibrary::drawDragFloat("fMaxDeviationRadius", smoothingParams.fMaxDeviationRadius);
-
-		//m_filter.Reset(smoothingParams.fSmoothing, smoothingParams.fCorrection, smoothingParams.fPrediction, smoothingParams.fJitterRadius, smoothingParams.fMaxDeviationRadius);
-
 		ImGui::End();
 	}
 

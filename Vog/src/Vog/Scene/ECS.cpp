@@ -17,7 +17,7 @@ namespace vog::ecs
 
 	ECS::~ECS()
 	{
-		VOG_CORE_LOG_TRACE("ECS dtor");
+		//VOG_CORE_LOG_TRACE("ECS dtor");
 		shutdown();
 	}
 

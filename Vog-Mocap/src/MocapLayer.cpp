@@ -10,8 +10,6 @@ namespace vog
 		:
 		Layer(name_), m_cameraController()
 	{
-		BenchmarkTimer t;
-
 		m_pActiveScene = createRefPtr<Scene>();
 		m_pEditorScene = m_pActiveScene;
 
@@ -20,43 +18,6 @@ namespace vog
 #endif // VOG_ENABLE_KINECT
 
 		m_arduinoSerial.init();
-#if 0
-		{
-			constexpr uint32_t num = 10000000;
-			{
-				BenchmarkTimer t("pair");
-
-				uint32_t x = 600;
-				uint32_t y = 52600;
-
-				std::unordered_map<uint32_t, uint32_t> maps;
-				maps.reserve(num);
-				struct pairFunc
-				{
-					static uint32_t make(uint32_t x_, uint32_t y_)
-					{
-						return (x_ * x_ + 3 * x_ + 2 * x_ * y_ + y_ + y_ * y_) / 2;
-					}
-				};
-				VOG_LOG_INFO("{0}", pairFunc::make(200, 2567));
-				VOG_LOG_INFO("{0}", pairFunc::make(2567, 200));
-
-				/*for (uint32_t i = 0; i < num; i++)
-				{
-					ret = pairFunc::make(i, y);
-					if (maps.find(ret) == maps.end())
-					{
-						maps[ret] = i;
-					}
-					else
-						VOG_LOG_INFO("same");
-				}*/
-			}
-
-			VOG_LOG_INFO(ret);
-	}
-
-#endif // 0
 
 		m_trail_left.init();
 		m_trail_right.init();
@@ -82,25 +43,16 @@ namespace vog
 
 	void MocapLayer::onAttach()
 	{
-		//m_pActiveScene->loadModel("assets/meshes/nano_textured/nanosuit.obj");
-		//m_pActiveScene->loadModel("assets/meshes/primitives/sphere.obj");
-		//m_pActiveScene->loadModel("assets/meshes/spider-mech/Spider mech.obj");
-		//m_pActiveScene->loadModel("assets/scenes/sponza/sponza.obj");
 
-		//m_pActiveScene->loadModel("assets/meshes/basic-kermit-20/Basic_Kermit.fbx");
 
 #if 1
 		// Kinect test
 		Entity modelEntity = m_pActiveScene->loadModel("assets/meshes/res/model.fbx");
-		//Entity modelEntity = m_pActiveScene->loadModel("assets/meshes/basic-kermit-20/Basic_Kermit.fbx");
-		//Entity modelEntity = m_pActiveScene->loadModel("assets/scenes/sponza/sponza.obj");
-
 		if (modelEntity.hasComponent<AnimationComponent>())
 		{
 			auto& mesh = modelEntity.getComponent<AnimationComponent>();
 			m_pKinectModel = mesh.pModel;
 		}
-
 		m_modelHandle = modelEntity;
 #endif // 0
 
