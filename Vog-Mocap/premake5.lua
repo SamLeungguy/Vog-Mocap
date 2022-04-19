@@ -32,13 +32,13 @@ project "Vog-Mocap"
         "%{wks.location}/%{prj.name}/deps/SerialPort/src",
 
         "%{wks.location}/%{prj.name}/deps/JointSmooth",
-        "$(KINECTSDK20_DIR)/inc",
+        --"$(KINECTSDK20_DIR)/inc",
 	}
 
     links
 	{
 		"Vog",
-        "$(KINECTSDK20_DIR)/Lib/x64/kinect20.lib",
+        --"$(KINECTSDK20_DIR)/Lib/x64/kinect20.lib",
 	}
 
     filter "system:windows"
@@ -48,7 +48,7 @@ project "Vog-Mocap"
         {
             "VOG_PLATFORM_WINDOWS",
             "GLM_FORCE_CTOR_INIT",
-            "VOG_ENABLE_KINECT",
+            --"VOG_ENABLE_KINECT",
         }
 
         postbuildcommands 

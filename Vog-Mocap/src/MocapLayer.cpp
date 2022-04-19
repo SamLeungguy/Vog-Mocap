@@ -884,7 +884,6 @@ namespace vog
 			//m_modelEntity
 			m_pKinectAPI->onUpdateBonesTransfom(m_pKinectModel);
 		}
-#endif // VOG_ENABLE_KINECT
 
 		{
 			m_arduinoSerial.update();
@@ -922,12 +921,8 @@ namespace vog
 			//VOG_LOG_INFO("left arm rotation");
 			//VOG_LOG_GLM(pTransform->rotation);
 			//VOG_LOG_INFO("== Update End==");
-
-			//auto data = m_pKinectAPI->getJointUpdatedData();
-			//auto& transform = m_pTestCubeEntity->getComponent<TransformComponent>();
-			//transform.rotation = MyMath::toEulerAngles(data[JointType_ElbowRight].rotation);
-			//transform.translation = data[JointType_ElbowRight].translation;
 		}
+#endif // VOG_ENABLE_KINECT
 	}
 
 	Vector2f MocapLayer::getViewportSize()
