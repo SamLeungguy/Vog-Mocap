@@ -1,6 +1,6 @@
 solution "Vog"
     architecture "x86_64"
-    startproject "Vog-Editor"
+    startproject "Vog-Mocap"
     
     configurations
     {
@@ -102,92 +102,3 @@ project "Vog"
 		defines "VOG_DISTRIBUTE"
 		runtime "Release"
 		optimize "on"
-
-project "Vog-Editor"
-    location "%{wks.location}/Vog-Editor"
-    kind "ConsoleApp"
-    language "C++"
-    cppdialect "C++17"
-    staticruntime "on"
-
-    targetdir ("%{wks.location}/bin/" .. outputDir .. "/%{prj.name}")
-	objdir ("%{wks.location}/bin/int/" .. outputDir .. "/%{prj.name}")
-
-    files
-	{
-		"%{wks.location}/%{prj.name}/src/**.h",
-		"%{wks.location}/%{prj.name}/src/**.cpp",
-	}
-
-    includedirs
-	{
-		"%{wks.location}/Vog/src",
-		"%{wks.location}/Vog/deps",
-        "%{includeDirs.glm}",
-        "%{includeDirs.spdlog}",
-	}
-
-    links
-	{
-		"Vog",
-	}
-
-    filter "system:windows"
-        systemversion "latest"
-
-        defines
-        {
-            "VOG_PLATFORM_WINDOWS",
-            "GLM_FORCE_CTOR_INIT",
-        }
-
-        postbuildcommands 
-		{
-            '{COPY} "%{wks.location}/%{prj.name}/imgui.ini" "%{cfg.targetdir}"',
-		}
-
-    filter "configurations:Debug"
-        defines "VOG_DEBUG"
-        runtime "Debug"
-        symbols "on"
-
-        links
-        {
-            "%{libraryDirs.assimp_Debug_Lib}",
-        }
-
-        postbuildcommands 
-		{
-            '{COPY} "%{binaryDirs.assimp_Debug_Bin}" "%{cfg.targetdir}"',
-		}
-
-    filter "configurations:Release"
-        defines "VOG_RELEASE"
-        runtime "Release"
-        optimize "on"
-
-        links
-        {
-            "%{libraryDirs.assimp_Release_Lib}",
-        }
-
-        postbuildcommands 
-		{
-            '{COPY} "%{binaryDirs.assimp_Release_Bin}" "%{cfg.targetdir}"',
-		}
-
-    filter "configurations:Distribute"
-        defines "VOG_DISTRIBUTE"
-        runtime "Release"
-        optimize "on"
-        
-        links
-        {
-            "%{libraryDirs.assimp_Release_Lib}",
-
-        }
-
-        postbuildcommands 
-		{
-            '{COPY} "%{binaryDirs.assimp_Release_Bin}" "%{cfg.targetdir}"',
-		}
