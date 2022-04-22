@@ -549,7 +549,7 @@ namespace vog
 
 				m_ray.origin = a;
 				m_ray.direction = MyMath::normalize(b - a);
-				m_pActiveScene->raycast(m_ray.origin, m_ray.direction);
+				//m_pActiveScene->raycast(m_ray.origin, m_ray.direction);
 			}
 		}
 

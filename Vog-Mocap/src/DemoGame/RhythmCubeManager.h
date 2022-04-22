@@ -28,7 +28,7 @@ namespace demo_game
 
 		int m_current_RhythmCount = 0;
 		float m_timer = 0;
-		float m_beat = 60.0f * 2.0f / 105.0f / 30.0f;
+		float m_beat = 60.0f * 2.0f / 105.0f / 20.0f;
 
 		float m_speed = 20.0f;
 
