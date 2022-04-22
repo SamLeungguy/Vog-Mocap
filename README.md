@@ -25,7 +25,7 @@ Windows:
 1. clone the project
 2. open generateProjects.bat
 3. open and compile the visual studio project
-4. done
+4. done  <br />
 ** default premake setting do not include Kinect SDK
 
 References: <br />
