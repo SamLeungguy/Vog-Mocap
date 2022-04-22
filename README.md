@@ -1,22 +1,22 @@
 # Vog-Mocap
 
-Vog-Mog is a demo application that based on my game engine Vog.
-Currently only support OpenGL
-Motion capture (Mocap) is my FYP topic
-We use Kinect and IMU for the motion capture hardware
+Vog-Mog is a demo application that based on my game engine Vog.<br />
+Motion capture (Mocap) is my FYP topic.<br />
+Currently only support OpenGL.<br />
+Kinect and IMU are used for the motion capture hardwares<br />
 
-Features: <br />
-• Deferred-Rendering <br />
-• Entity-Component-System(ECS) <br />
+Features:<br />
+• Deferred-Rendering<br />
+• Entity-Component-System(ECS)<br />
 • Basic Physics system <br />
-• Basic animation loading <br />
-• Model loading <br />
-• Shading features (Bloom / Blur, Shadow Mapping, Trail) <br />
-• Simple user Interface <br />
-• Basic character control system with serial data <br />
+• Basic animation loading<br />
+• Model loading<br />
+• Shading features (Bloom / Blur, Shadow Mapping, Trail)<br />
+• Simple user Interface<br />
+• Basic character control system with serial data<br />
 
 The Demo game:
-![alt text](https://github.com/SamLeungguy/Vog-Mocap/blob/main/media/png/demo-game.png?raw=true)
+<!--- ![alt text](https://github.com/SamLeungguy/Vog-Mocap/blob/main/media/png/demo-game.png?raw=true) ---> 
 ![](https://github.com/SamLeungguy/Vog-Mocap/blob/main/media/gifs/demo-game-raw.gif)
 
 How-to-build
@@ -25,8 +25,8 @@ Windows:
 1. clone the project
 2. open generateProjects.bat
 3. open and compile the visual studio project
-4. done  <br />
-** default premake setting do not include Kinect SDK
+4. done<br />
+**default premake setting do not include Kinect SDK
 
 References: <br />
 • Mostly Shading Features: 
